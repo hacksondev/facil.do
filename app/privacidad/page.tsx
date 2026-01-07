@@ -40,7 +40,7 @@ export default function PrivacidadPage() {
             {/* Hero */}
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold text-base-content mb-4">Política de Privacidad</h1>
-              <p className="text-base-content/70">Última actualización: Enero 2025</p>
+              <p className="text-base-content/70">Última actualización: Enero 2026</p>
             </div>
 
             {/* Intro */}
