@@ -71,6 +71,7 @@ export default async function BackofficePage({ searchParams }: PageProps) {
   const topAccounts = accounts.slice(0, 3)
   const recentTx = transactions.slice(0, 5)
   const latestLiveness = livenessSessions[0]
+  const sparkline = buildSparkline(transactions)
 
   return (
     <BackofficeShell
@@ -96,54 +97,74 @@ export default async function BackofficePage({ searchParams }: PageProps) {
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1.6fr,1fr]">
-          <CardPanel title="Saldos y movimiento">
+          <CardPanel title="Balance total" subtitle="Últimos 30 días">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
-                  <p className="text-sm text-base-content/60">Saldo DOP</p>
-                  <p className="text-3xl font-semibold">{formatCurrency(dopBalance, 'DOP')}</p>
+                  <p className="text-sm text-base-content/60">Saldo total</p>
+                  <p className="text-3xl font-semibold">
+                    {formatCurrency(dopBalance + usdBalance * 59, 'DOP')}
+                  </p>
                 </div>
-                <div>
-                  <p className="text-sm text-base-content/60">Saldo USD</p>
-                  <p className="text-3xl font-semibold">{formatCurrency(usdBalance, 'USD')}</p>
+                <div className="flex gap-3 text-sm">
+                  <span className="text-success font-semibold">↗ {formatCurrency(1700000, 'DOP')}</span>
+                  <span className="text-error font-semibold">↘ {formatCurrency(420000, 'DOP')}</span>
                 </div>
                 <div className="flex gap-2">
                   <span className="badge bg-success/10 text-success border-success/30">Operativo</span>
                   <span className="badge bg-primary/10 text-primary border-primary/30">Cashflow</span>
                 </div>
               </div>
-              <div className="h-32 w-full rounded-xl bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 border border-base-300 flex items-end gap-2 px-3 pb-3">
-                {[40, 62, 55, 75, 68, 82, 90].map((height, idx) => (
-                  <div
-                    key={idx}
-                    className="flex-1 rounded-full bg-primary/60"
-                    style={{ height: `${height}%`, minHeight: '12%' }}
-                  />
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-3 text-sm text-base-content/70">
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-primary" />
-                  <span>Entradas últimas 30 días</span>
+              <div className="h-48 rounded-xl border border-base-300 bg-gradient-to-b from-primary/5 via-base-100 to-base-100 p-3 flex flex-col">
+                <div className="flex-1 relative">
+                  <svg viewBox="0 0 100 40" className="h-full w-full">
+                    <defs>
+                      <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="rgba(82,102,235,0.22)" />
+                        <stop offset="100%" stopColor="rgba(82,102,235,0.02)" />
+                      </linearGradient>
+                    </defs>
+                    <polyline
+                      fill="url(#balanceGradient)"
+                      stroke="none"
+                      points={sparkline
+                        .map(({ x, y }) => `${x},40 ${x},${y}`)
+                        .join(' ')}
+                    />
+                    <polyline
+                      fill="none"
+                      stroke="rgba(82,102,235,0.8)"
+                      strokeWidth="1.5"
+                      points={sparkline.map(({ x, y }) => `${x},${y}`).join(' ')}
+                    />
+                  </svg>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-secondary" />
-                  <span>Salidas últimas 30 días</span>
+                <div className="grid grid-cols-5 text-xs text-base-content/60 mt-1">
+                  {['Dec 13', 'Dec 18', 'Dec 23', 'Dec 28', 'Jan 2'].map((label) => (
+                    <span key={label}>{label}</span>
+                  ))}
                 </div>
               </div>
             </div>
           </CardPanel>
 
-          <CardPanel title="Cuentas" actionLabel="+ Cuenta">
+          <CardPanel title="Cuentas" subtitle="DOP / USD" actionLabel="+ Cuenta">
             <div className="space-y-3">
               {topAccounts.map((acc) => (
                 <div
                   key={acc.id}
                   className="flex items-center justify-between rounded-lg border border-base-300 bg-base-100 px-3 py-3"
                 >
-                  <div>
-                    <p className="font-medium">{acc.type === 'checking' ? 'Corriente' : 'Ahorro'} ·· {acc.number.slice(-4)}</p>
-                    <p className="text-sm text-base-content/60">{acc.alias}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 rounded-full bg-base-200 border border-base-300" />
+                    <div>
+                      <p className="font-medium">
+                        {acc.alias} ·· {acc.number.slice(-4)}
+                      </p>
+                      <p className="text-xs text-base-content/60 capitalize">
+                        {acc.type === 'checking' ? 'Corriente' : 'Ahorro'}
+                      </p>
+                    </div>
                   </div>
                   <div className="text-right">
                     <p className="font-semibold">{formatCurrency(acc.balance, acc.currency)}</p>
@@ -152,7 +173,7 @@ export default async function BackofficePage({ searchParams }: PageProps) {
                 </div>
               ))}
               <div className="rounded-lg border border-dashed border-base-300 bg-base-100 px-3 py-3 text-sm text-base-content/70">
-                Crea cuentas separadas para impuestos, nómina y operaciones. Límites diarios: {formatCurrency(1500000, 'DOP')}.
+                Ver todas las cuentas y reglas automáticas de transferencias.
               </div>
             </div>
           </CardPanel>
@@ -251,6 +272,30 @@ export default async function BackofficePage({ searchParams }: PageProps) {
           </CardPanel>
         </div>
 
+        <div className="grid gap-4 lg:grid-cols-3">
+          <SummaryCard
+            title="Tarjeta corporativa"
+            amount={formatCurrency(topAccounts[0]?.balance ?? 12505.87, 'DOP')}
+            chipLabel="Balance"
+            actionLabel="Pagar"
+            meta="Autopago: 12 de ene"
+          />
+          <SummaryCard
+            title="Bill Pay"
+            amount="11 pendientes"
+            chipLabel="Inbox 3 items • $10K"
+            actionLabel="Ver"
+            meta="1 vencida"
+          />
+          <SummaryCard
+            title="Facturación"
+            amount="12 items • $12.3K"
+            chipLabel="Pagados: 12 • $6K"
+            actionLabel="Ver"
+            meta="Vencidos: 4 • $950"
+          />
+        </div>
+
         <CardPanel title="Movimientos recientes" actionLabel="Descargar CSV">
           <div className="overflow-x-auto">
             <table className="table table-zebra w-full">
@@ -329,6 +374,52 @@ function VirtualCardBanner({ companyName }: { companyName: string }) {
           <p className="text-xs text-base-content/60 mt-3 text-right">Escanea para pagar o copiar número</p>
         </div>
       </div>
+    </div>
+  )
+}
+
+function buildSparkline(transactions: Transaction[]) {
+  const base = 35
+  const points = transactions.slice(0, 7).map((tx, idx) => ({
+    x: 10 + idx * 12,
+    y: base - Math.min(30, Math.max(-10, tx.amount / 50000)),
+  }))
+  while (points.length < 7) {
+    points.push({ x: 10 + points.length * 12, y: base - (5 + points.length) })
+  }
+  return points
+}
+
+function SummaryCard({
+  title,
+  amount,
+  chipLabel,
+  actionLabel,
+  meta,
+}: {
+  title: string
+  amount: string
+  chipLabel: string
+  actionLabel: string
+  meta: string
+}) {
+  return (
+    <div className="rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-base-content/60">{title}</p>
+          <p className="text-xl font-semibold">{amount}</p>
+        </div>
+        <button className="btn btn-circle btn-ghost btn-sm border border-base-300">···</button>
+      </div>
+      <div className="w-full h-2 rounded-full bg-base-200 overflow-hidden">
+        <div className="h-full w-1/2 bg-primary/50" />
+      </div>
+      <div className="flex items-center justify-between text-sm text-base-content/70">
+        <span>{meta}</span>
+        <button className="btn btn-sm bg-base-100 border-base-300">{actionLabel}</button>
+      </div>
+      <div className="text-xs text-base-content/60">{chipLabel}</div>
     </div>
   )
 }

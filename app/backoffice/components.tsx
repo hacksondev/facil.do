@@ -5,7 +5,84 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Company } from './utils'
-import { riskColor } from './utils'
+
+type IconName =
+  | 'home'
+  | 'tasks'
+  | 'arrows'
+  | 'payments'
+  | 'card'
+  | 'capital'
+  | 'accounts'
+  | 'checking'
+  | 'savings'
+  | 'workflows'
+  | 'bill'
+  | 'invoice'
+  | 'catalog'
+  | 'customers'
+  | 'reimburse'
+  | 'accounting'
+  | 'user'
+  | 'tax'
+  | 'ach'
+  | 'dot'
+
+type NavItem = {
+  label: string
+  href: string
+  icon: IconName
+  children?: NavItem[]
+}
+
+function buildNavItems(companyQuery: string): NavItem[] {
+  const withQuery = (href: string) => (href === '#' ? href : `${href}${companyQuery}`)
+  return [
+    { label: 'Inicio', href: withQuery('/backoffice'), icon: 'home' },
+    { label: 'Tareas', href: withQuery('/backoffice/tasks'), icon: 'tasks' },
+    { label: 'Transacciones', href: withQuery('/backoffice/transactions'), icon: 'arrows' },
+    {
+      label: 'Pagos',
+      href: withQuery('/backoffice/payments'),
+      icon: 'payments',
+      children: [
+        { label: 'Beneficiarios', href: withQuery('/backoffice/payments/beneficiarios'), icon: 'user' },
+        { label: 'Impuestos', href: withQuery('/backoffice/payments/impuestos'), icon: 'tax' },
+        { label: 'Autorizaciones ACH', href: withQuery('/backoffice/payments/ach'), icon: 'ach' },
+      ],
+    },
+    { label: 'Tarjetas', href: withQuery('/backoffice/cards'), icon: 'card' },
+    { label: 'Capital', href: withQuery('/backoffice/capital'), icon: 'capital' },
+    {
+      label: 'Cuentas',
+      href: withQuery('/backoffice/accounts'),
+      icon: 'accounts',
+      children: [
+        { label: 'Corriente', href: withQuery('/backoffice/accounts'), icon: 'checking' },
+        { label: 'Ahorros', href: withQuery('/backoffice/accounts'), icon: 'savings' },
+      ],
+    },
+    {
+      label: 'Workflows',
+      href: withQuery('/backoffice/workflows'),
+      icon: 'workflows',
+      children: [
+        { label: 'Bill Pay', href: withQuery('/backoffice/workflows/bill-pay'), icon: 'bill' },
+        {
+          label: 'Facturación',
+          href: withQuery('/backoffice/workflows/facturacion'),
+          icon: 'invoice',
+          children: [
+            { label: 'Catálogo', href: withQuery('/backoffice/workflows/facturacion/catalogo'), icon: 'catalog' },
+            { label: 'Clientes', href: withQuery('/backoffice/workflows/facturacion/clientes'), icon: 'customers' },
+          ],
+        },
+        { label: 'Reembolsos', href: withQuery('/backoffice/workflows/reembolsos'), icon: 'reimburse' },
+        { label: 'Contabilidad', href: withQuery('/backoffice/workflows/contabilidad'), icon: 'accounting' },
+      ],
+    },
+  ]
+}
 
 type ShellProps = {
   children: React.ReactNode
@@ -26,18 +103,35 @@ export function BackofficeShell({
   subtitle,
   actionLabel = 'Mover fondos',
 }: ShellProps) {
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const companyQuery = activeCompany?.id ? `?companyId=${activeCompany.id}` : ''
+  const navItems = buildNavItems(companyQuery)
   return (
-    <div className="min-h-screen bg-base-200 text-base-content">
-      <div className="flex min-h-screen">
-        <Sidebar companies={companies} activeCompanyId={activeCompany?.id} activePath={activePath} />
-        <div className="flex-1 p-4 md:p-6 lg:p-8 space-y-4">
-          <TopBar
-            title={title}
-            subtitle={subtitle ?? activeCompany?.name}
-            searchPlaceholder="Busca onboarding, cuentas, personas..."
-            actionLabel={actionLabel}
-          />
-          <div className="space-y-4">{children}</div>
+    <div className="h-screen overflow-hidden bg-base-200 text-base-content">
+      <div className="flex h-screen">
+        <Sidebar
+          companies={companies}
+          activeCompanyId={activeCompany?.id}
+          activePath={activePath}
+          navItems={navItems}
+        />
+        <div className="flex-1 min-w-0 flex flex-col">
+          <div className="p-4 md:p-6 lg:p-8 space-y-4 overflow-y-auto h-full">
+            <TopBar
+              title={title}
+              subtitle={subtitle ?? activeCompany?.name}
+              searchPlaceholder="Busca onboarding, cuentas, personas..."
+              actionLabel={actionLabel}
+              onMenuClick={() => setMobileOpen(true)}
+            />
+            <MobileDrawer
+              open={mobileOpen}
+              onClose={() => setMobileOpen(false)}
+              navItems={navItems}
+              activePath={activePath}
+            />
+            <div className="space-y-4 pb-8">{children}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -48,73 +142,26 @@ function Sidebar({
   companies,
   activeCompanyId,
   activePath,
+  navItems,
 }: {
   companies: Company[]
   activeCompanyId?: string
   activePath: string
+  navItems: ReturnType<typeof buildNavItems>
 }) {
   const router = useRouter()
   const activeCompany = companies.find((c) => c.id === activeCompanyId) ?? companies[0]
-  const companyQuery = activeCompanyId ? `?companyId=${activeCompanyId}` : ''
-
-  type NavItem = {
-    label: string
-    href: string
-    icon: IconName
-    children?: NavItem[]
-  }
-
-  const navItems = [
-    { label: 'Inicio', href: '/backoffice', icon: 'home' },
-    { label: 'Tareas', href: '#', icon: 'tasks' },
-    { label: 'Transacciones', href: '#', icon: 'arrows' },
-    {
-      label: 'Pagos',
-      href: '#',
-      icon: 'payments',
-      children: [
-          { label: 'Beneficiarios', href: '#', icon: 'user' },
-          { label: 'Impuestos', href: '#', icon: 'tax' },
-          { label: 'Autorizaciones ACH', href: '#', icon: 'ach' },
-      ],
-    },
-    { label: 'Tarjetas', href: '#', icon: 'card' },
-    { label: 'Capital', href: '#', icon: 'capital' },
-    {
-      label: 'Cuentas',
-      href: '/backoffice/accounts',
-      icon: 'accounts',
-      children: [
-        { label: 'Corriente', href: '/backoffice/accounts', icon: 'checking' },
-        { label: 'Ahorros', href: '/backoffice/accounts', icon: 'savings' },
-      ],
-    },
-    {
-      label: 'Workflows',
-      href: '#',
-      icon: 'workflows',
-      children: [
-        { label: 'Bill Pay', href: '#', icon: 'bill' },
-        {
-          label: 'Facturación',
-          href: '#',
-          icon: 'invoice',
-          children: [
-            { label: 'Catálogo', href: '#', icon: 'catalog' },
-            { label: 'Clientes', href: '#', icon: 'customers' },
-          ],
-        },
-        { label: 'Reembolsos', href: '#', icon: 'reimburse' },
-        { label: 'Contabilidad', href: '#', icon: 'accounting' },
-      ],
-    },
-  ] satisfies NavItem[]
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {}
     navItems.forEach((item) => {
       if (item.children && item.href !== '#' && activePath.startsWith(item.href)) {
         initial[item.label] = true
+        item.children?.forEach((child) => {
+          if (child.children && activePath.startsWith(child.href)) {
+            initial[`${item.label}-${child.label}`] = true
+          }
+        })
       }
     })
     return initial
@@ -147,11 +194,11 @@ function Sidebar({
             tabIndex={0}
             className="dropdown-content menu bg-base-100 border border-base-300 rounded-xl w-64 shadow-lg p-2"
           >
-            <li><button type="button" className="justify-start">Settings</button></li>
-            <li><button type="button" className="justify-start">User</button></li>
-            <li><button type="button" className="justify-start">Documents &amp; Data</button></li>
-            <li><button type="button" className="justify-start">Plan &amp; Billing</button></li>
-            <li><button type="button" className="justify-start">Referrals</button></li>
+            <li><Link href={`/backoffice/ajustes${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Configuración</Link></li>
+            <li><Link href={`/backoffice/usuario${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Usuario</Link></li>
+            <li><Link href={`/backoffice/documentos${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Documentos y datos</Link></li>
+            <li><Link href={`/backoffice/plan-facturacion${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Plan y facturación</Link></li>
+            <li><Link href={`/backoffice/referidos${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Referidos</Link></li>
             <li className="menu-title mt-2">Switch account</li>
             {companies.map((c) => (
               <li key={c.id}>
@@ -167,8 +214,8 @@ function Sidebar({
               </li>
             ))}
             <li><hr className="my-2" /></li>
-            <li><button type="button" className="justify-start">Apply for a new account</button></li>
-            <li><button type="button" className="justify-start">Link an existing account</button></li>
+            <li><button type="button" className="justify-start">Aplicar a nueva cuenta</button></li>
+            <li><button type="button" className="justify-start">Vincular cuenta existente</button></li>
             <li>
               <button
                 className="text-error text-left"
@@ -187,7 +234,6 @@ function Sidebar({
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {navItems.map((item) => {
           const isActive = item.href !== '#' && activePath.startsWith(item.href)
-          const hrefWithCompany = item.href === '#' ? '#' : `${item.href}${companyQuery}`
           const isOpen = !!openSections[item.label]
           return (
             <div key={item.label} className="space-y-1">
@@ -214,7 +260,7 @@ function Sidebar({
                 </button>
               ) : (
                 <Link
-                  href={hrefWithCompany}
+                  href={item.href}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium ${
                     isActive ? 'bg-base-200 text-base-content' : 'text-base-content/70 hover:bg-base-200'
                   }`}
@@ -226,7 +272,7 @@ function Sidebar({
               {item.children && (
                 <div className={`pl-3 space-y-1 ${isOpen ? 'block' : 'hidden'}`}>
                   {item.children.map((child) => {
-                    const childHref = child.href === '#' ? '#' : `${child.href}${companyQuery}`
+                    const childHref = child.href
                     const childOpen = !!openSections[`${item.label}-${child.label}`]
                     return (
                       <div key={child.label} className="space-y-1">
@@ -261,7 +307,7 @@ function Sidebar({
                         {child.children && (
                           <div className={`pl-3 space-y-1 ${childOpen ? 'block' : 'hidden'}`}>
                             {child.children.map((grand) => {
-                              const grandHref = grand.href === '#' ? '#' : `${grand.href}${companyQuery}`
+                              const grandHref = grand.href
                               return (
                                 <Link
                                   key={grand.label}
@@ -291,21 +337,88 @@ function Sidebar({
   )
 }
 
+function MobileDrawer({
+  open,
+  onClose,
+  navItems,
+  activePath,
+}: {
+  open: boolean
+  onClose: () => void
+  navItems: NavItem[]
+  activePath: string
+}) {
+  if (!open) return null
+  return (
+    <div className="lg:hidden fixed inset-0 z-50 bg-base-100/90 backdrop-blur-sm">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-base-300">
+        <p className="text-sm font-semibold">Menú</p>
+        <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Cerrar menú">
+          ✕
+        </button>
+      </div>
+      <div className="p-4 space-y-2 overflow-y-auto h-[calc(100%-52px)]">
+        {navItems.map((item) => (
+          <div key={item.label} className="space-y-1">
+            <Link
+              href={item.href}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium ${
+                activePath.startsWith(item.href.replace(/\?.*/, ''))
+                  ? 'bg-base-200 text-base-content'
+                  : 'text-base-content/70 hover:bg-base-200'
+              }`}
+              onClick={onClose}
+            >
+              <Icon name={item.icon} />
+              {item.label}
+            </Link>
+            {item.children && (
+              <div className="pl-4 space-y-1">
+                {item.children.map((child) => (
+                  <Link
+                    key={child.label}
+                    href={child.href}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-base-content/70 hover:bg-base-200"
+                    onClick={onClose}
+                  >
+                    <Icon name={child.icon} size="sm" />
+                    {child.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function TopBar({
   title,
   subtitle,
   searchPlaceholder,
   actionLabel,
+  onMenuClick,
 }: {
   title: string
   subtitle?: string
   searchPlaceholder?: string
   actionLabel?: string
+  onMenuClick?: () => void
 }) {
   return (
     <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-3 w-full md:w-auto">
         <div className="hidden md:block h-10 w-10 rounded-xl bg-primary/10 border border-primary/20" />
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm lg:hidden"
+          aria-label="Abrir menú"
+          onClick={onMenuClick}
+        >
+          ☰
+        </button>
         <div>
           <p className="text-sm text-base-content/60">{subtitle}</p>
           <h1 className="text-xl font-semibold">{title}</h1>
@@ -371,28 +484,6 @@ export function ProgressRow({ label, value, accent }: { label: string; value: nu
     </div>
   )
 }
-
-type IconName =
-  | 'home'
-  | 'tasks'
-  | 'arrows'
-  | 'payments'
-  | 'card'
-  | 'capital'
-  | 'accounts'
-  | 'checking'
-  | 'savings'
-  | 'workflows'
-  | 'bill'
-  | 'invoice'
-  | 'catalog'
-  | 'customers'
-  | 'reimburse'
-  | 'accounting'
-  | 'user'
-  | 'tax'
-  | 'ach'
-  | 'dot'
 
 function Icon({ name, size = 'md' }: { name: IconName; size?: 'md' | 'sm' | 'xs' }) {
   const dimension = size === 'md' ? 16 : size === 'sm' ? 14 : 10
