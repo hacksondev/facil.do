@@ -203,7 +203,7 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
         </div>
       </section>
 
-      <section className="section bg-base-200/50">
+      {/* <section className="section bg-base-200/50">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-base-content mb-4">Cómo funciona</h2>
@@ -233,7 +233,7 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
             </ul>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="section bg-base-100">
         <div className="container-custom">

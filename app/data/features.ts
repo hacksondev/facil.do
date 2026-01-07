@@ -86,7 +86,7 @@ export const features: FeatureDetail[] = [
       },
     ],
     stats: [
-      { value: '< 10 min', label: 'Tiempo de apertura' },
+      { value: '10 minutos', label: 'Tiempo de apertura' },
       { value: '100%', label: 'Online' },
       { value: '24/7', label: 'Disponible siempre' },
     ],
