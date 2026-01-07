@@ -13,6 +13,9 @@ export default function OnboardingCreateAccountPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [info, setInfo] = useState<string | null>(null)
+  const [confirmationSent, setConfirmationSent] = useState(false)
+  const [confirmingLogin, setConfirmingLogin] = useState(false)
 
   const firstName = searchParams.get('firstName') ?? ''
   const lastName = searchParams.get('lastName') ?? ''
@@ -21,6 +24,7 @@ export default function OnboardingCreateAccountPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    setInfo(null)
 
     try {
       const validateRes = await fetch('/api/onboarding/validate', {
@@ -35,8 +39,14 @@ export default function OnboardingCreateAccountPage() {
           setLoading(false)
           return
         }
-        throw new Error(body.error ?? 'No se pudo validar el correo')
+        const detail = body.details ? ` Detalle: ${body.details}` : ''
+        throw new Error((body.error ?? 'No se pudo validar el correo') + detail)
       }
+
+      const emailRedirectTo =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/backoffice/login`
+          : undefined
 
       const fullName = `${firstName} ${lastName}`.trim()
       const { error: signUpError } = await supabase.auth.signUp({
@@ -46,6 +56,7 @@ export default function OnboardingCreateAccountPage() {
           data: {
             fullName,
           },
+          emailRedirectTo,
         },
       })
 
@@ -55,14 +66,72 @@ export default function OnboardingCreateAccountPage() {
         return
       }
 
+      setConfirmationSent(true)
+      setInfo('Revisa tu correo y confirma tu cuenta para continuar con el onboarding.')
+      setLoading(false)
+    } catch (err: any) {
+      console.error('Error creando cuenta:', err)
+      setError(err?.message ?? 'No se pudo crear la cuenta')
+      setLoading(false)
+    }
+  }
+
+  const handleConfirmAndContinue = async () => {
+    setConfirmingLogin(true)
+    setError(null)
+    setInfo(null)
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      if (signInError) {
+        if (signInError.message?.toLowerCase().includes('email not confirmed')) {
+          setError('Aún no confirmas tu correo. Revisa tu bandeja o reenvía el enlace.')
+        } else {
+          setError(signInError.message ?? 'No se pudo iniciar sesión')
+        }
+        setConfirmingLogin(false)
+        return
+      }
+
+      if (!data.session) {
+        setError('Aún no hay sesión activa. Confirma el correo e inténtalo de nuevo.')
+        setConfirmingLogin(false)
+        return
+      }
+
       const params = new URLSearchParams()
       params.set('firstName', firstName)
       params.set('lastName', lastName)
       params.set('email', email)
       router.push(`/backoffice/onboarding/company-info?${params.toString()}`)
     } catch (err: any) {
-      console.error('Error creando cuenta:', err)
-      setError(err?.message ?? 'No se pudo crear la cuenta')
+      console.error('Error al confirmar e ingresar:', err)
+      setError(err?.message ?? 'No se pudo continuar')
+    } finally {
+      setConfirmingLogin(false)
+    }
+  }
+
+  const handleResend = async () => {
+    setLoading(true)
+    setError(null)
+    setInfo(null)
+    try {
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+      })
+      if (resendError) {
+        setError(resendError.message ?? 'No se pudo reenviar el correo')
+      } else {
+        setInfo('Correo de confirmación reenviado. Revisa tu bandeja.')
+      }
+    } catch (err: any) {
+      console.error('Error reenviando correo:', err)
+      setError(err?.message ?? 'No se pudo reenviar el correo')
+    } finally {
       setLoading(false)
     }
   }
@@ -94,7 +163,9 @@ export default function OnboardingCreateAccountPage() {
         >
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold">Crea tu acceso</h1>
-            <p className="text-base-content/70">Usarás este correo y contraseña para ingresar.</p>
+            <p className="text-base-content/70">
+              Usarás este correo y contraseña para ingresar. Debes confirmar el correo para continuar.
+            </p>
           </div>
 
           <div className="space-y-3">
@@ -134,13 +205,41 @@ export default function OnboardingCreateAccountPage() {
             </label>
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary w-full md:w-auto px-6 text-primary-content"
-            disabled={loading}
-          >
-            {loading ? 'Creando...' : 'Siguiente'}
-          </button>
+          {!confirmationSent && (
+            <button
+              type="submit"
+              className="btn btn-primary w-full md:w-auto px-6 text-primary-content"
+              disabled={loading}
+            >
+              {loading ? 'Creando...' : 'Crear cuenta'}
+            </button>
+          )}
+
+          {confirmationSent && (
+            <div className="rounded-lg border border-base-300 bg-base-200 p-4 space-y-3">
+              <p className="text-sm">
+                Enviamos un correo de confirmación a <strong>{email}</strong>. Confírmalo para seguir con el onboarding.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm text-primary-content"
+                  onClick={handleConfirmAndContinue}
+                  disabled={confirmingLogin}
+                >
+                  {confirmingLogin ? 'Verificando...' : 'Ya confirmé, continuar'}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm"
+                  onClick={handleResend}
+                  disabled={loading}
+                >
+                  Reenviar correo
+                </button>
+              </div>
+            </div>
+          )}
 
           <p className="text-xs text-base-content/60 leading-relaxed">
             Continuar implica aceptar los Términos y la Política de privacidad de Facil.do y consentir comunicaciones
@@ -149,6 +248,7 @@ export default function OnboardingCreateAccountPage() {
           {(firstName || lastName) && (
             <p className="text-xs text-base-content/60">Aplicante: {firstName} {lastName}</p>
           )}
+          {info && <p className="text-sm text-success">{info}</p>}
           {error && <p className="text-sm text-error">{error}</p>}
           <div className="flex justify-start">
             <button type="button" className="btn btn-ghost btn-sm" onClick={handleBack}>

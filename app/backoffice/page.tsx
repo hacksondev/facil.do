@@ -1,45 +1,15 @@
+import { cookies } from 'next/headers'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { BackofficeShell, CardPanel, ProgressRow } from './components'
 import {
   Account,
   Alert,
   Company,
-  LivenessSession,
-  OnboardingCase,
-  Person,
   Transaction,
-  fetchMock,
   formatCurrency,
   formatDate,
-  riskColor,
-  statusBadge,
 } from './utils'
 
-type CompanyDetailResponse = {
-  company: Company
-  onboardingCase?: OnboardingCase
-  owner?: Person
-  livenessSessions: LivenessSession[]
-  accounts: Account[]
-  transactions: Transaction[]
-  alerts: Alert[]
-}
-
-type CompaniesResponse = {
-  data: Company[]
-}
-
-async function getDashboardData(companyId?: string) {
-  const companiesRes = await fetchMock<CompaniesResponse>('/api/mock/companies')
-  const activeCompany =
-    companiesRes.data.find((c) => (companyId ? c.id === companyId : c)) ?? companiesRes.data[0]
-
-  if (!activeCompany) {
-    return { companies: [], detail: null as CompanyDetailResponse | null }
-  }
-
-  const detail = await fetchMock<CompanyDetailResponse>(`/api/mock/companies/${activeCompany.id}`)
-  return { companies: companiesRes.data, detail }
-}
 
 type PageProps = {
   searchParams?: {
@@ -48,43 +18,138 @@ type PageProps = {
 }
 
 export default async function BackofficePage({ searchParams }: PageProps) {
-  const { companies, detail } = await getDashboardData(searchParams?.companyId)
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
 
-  if (!detail) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
     return (
       <div className="min-h-screen bg-base-200 text-base-content flex items-center justify-center">
         <div className="text-center space-y-3">
           <p className="text-sm font-semibold uppercase tracking-wide text-base-content/60">Backoffice</p>
-          <h1 className="text-2xl font-bold">Sin datos mock</h1>
-          <p className="text-base-content/70">
-            Agrega empresas en <code className="px-2 py-1 rounded bg-base-300">app/api/mock/data.ts</code> para ver el dashboard.
-          </p>
+          <h1 className="text-2xl font-bold">Sesión requerida</h1>
+          <p className="text-base-content/70">Inicia sesión para ver tus cuentas.</p>
         </div>
       </div>
     )
   }
 
-  const { company, onboardingCase, owner, livenessSessions, accounts, transactions, alerts } = detail
+  const { data: companiesRaw, error: companiesError } = await supabase
+    .from('companies')
+    .select('id,name,rnc,phone,industry,created_at')
+    .eq('created_by', user.id)
+    .order('created_at', { ascending: true })
+
+  if (companiesError) {
+    console.error('Error cargando empresas', companiesError)
+  }
+
+  let companies: Company[] =
+    companiesRaw?.map((c) => ({
+      id: c.id,
+      name: c.name,
+      rnc: c.rnc,
+      country: 'República Dominicana',
+      phone: c.phone || '',
+      industry: c.industry || '',
+      createdAt: c.created_at || '',
+      sector: '',
+      riskLevel: 'low',
+      onboardingStage: 'collecting',
+      ownerPersonId: '',
+    })) ?? []
+
+  if (companies.length === 0) {
+    const { data: fallbackCompanies } = await supabase
+      .from('companies')
+      .select('id,name,rnc,phone,industry,created_at')
+      .order('created_at', { ascending: true })
+      .limit(1)
+
+    companies =
+      fallbackCompanies?.map((c) => ({
+        id: c.id,
+        name: c.name,
+        rnc: c.rnc,
+        country: 'República Dominicana',
+        phone: c.phone || '',
+        industry: c.industry || '',
+        createdAt: c.created_at || '',
+        sector: '',
+        riskLevel: 'low',
+        onboardingStage: 'collecting',
+        ownerPersonId: '',
+      })) ?? []
+  }
+
+  const activeCompany =
+    companies.find((c) => (searchParams?.companyId ? c.id === searchParams.companyId : c)) ?? companies[0]
+
+
+  const { data: accountsRaw } = await supabase
+    .from('accounts')
+    .select('id,company_id,type,currency,balance,status,alias,number,created_at,limits')
+    .eq('company_id', activeCompany.id)
+    .order('created_at', { ascending: true })
+
+  const accounts: Account[] =
+    accountsRaw?.map((a) => ({
+      id: a.id,
+      companyId: a.company_id,
+      type: a.type as Account['type'],
+      currency: a.currency,
+      balance: Number(a.balance ?? 0),
+      status: (a.status as any) || 'pending_activation',
+      alias: a.alias || '',
+      number: a.number || '',
+      limits: (a.limits ?? {}) as Account['limits'],
+      updatedAt: a.created_at || '',
+    })) ?? []
+
+  const accountIds = accounts.map((a) => a.id)
+
+  const { data: txRaw } =
+    accountIds.length > 0
+      ? await supabase
+          .from('transactions')
+          .select('id,account_id,type,amount,currency,counterparty,description,status,created_at')
+          .in('account_id', accountIds)
+          .order('created_at', { ascending: false })
+      : { data: null }
+
+  const transactions: Transaction[] =
+    txRaw?.map((t) => ({
+      id: t.id,
+      accountId: t.account_id,
+      type: t.type as any,
+      amount: Number(t.amount ?? 0),
+      currency: t.currency || 'DOP',
+      counterparty: t.counterparty || '',
+      description: t.description || '',
+      status: (t.status as any) || 'pending',
+      createdAt: t.created_at || '',
+    })) ?? []
+
   const dopBalance = accounts.filter((a) => a.currency === 'DOP').reduce((sum, acc) => sum + acc.balance, 0)
   const usdBalance = accounts.filter((a) => a.currency === 'USD').reduce((sum, acc) => sum + acc.balance, 0)
-  const openAlerts = alerts.filter((a) => a.status === 'open')
+  const openAlerts: Alert[] = []
   const topAccounts = accounts.slice(0, 3)
   const recentTx = transactions.slice(0, 5)
-  const latestLiveness = livenessSessions[0]
   const sparkline = buildSparkline(transactions)
 
   return (
     <BackofficeShell
       companies={companies}
-      activeCompany={company}
+      activeCompany={activeCompany}
       activePath="/backoffice"
       title="Home"
-      subtitle={company.name}
+      subtitle={activeCompany.name}
     >
       <div className="grid gap-4">
-        <VirtualCardBanner companyName={company.name} />
-
-        <div className="flex flex-wrap items-center gap-2">
+        {/* <div className="flex flex-wrap items-center gap-2">
           {['Enviar', 'Transferir', 'Depositar', 'Solicitar', 'Cargar factura'].map((label) => (
             <button
               key={label}
@@ -94,10 +159,10 @@ export default async function BackofficePage({ searchParams }: PageProps) {
               {label}
             </button>
           ))}
-        </div>
+        </div> */}
 
         <div className="grid gap-4 lg:grid-cols-[1.6fr,1fr]">
-          <CardPanel title="Balance total" subtitle="Últimos 30 días">
+          {/* <CardPanel title="Balance total" subtitle="Últimos 30 días">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
@@ -146,8 +211,8 @@ export default async function BackofficePage({ searchParams }: PageProps) {
                 </div>
               </div>
             </div>
-          </CardPanel>
-
+          </CardPanel> */}
+{/* 
           <CardPanel title="Cuentas" subtitle="DOP / USD" actionLabel="+ Cuenta">
             <div className="space-y-3">
               {topAccounts.map((acc) => (
@@ -176,48 +241,11 @@ export default async function BackofficePage({ searchParams }: PageProps) {
                 Ver todas las cuentas y reglas automáticas de transferencias.
               </div>
             </div>
-          </CardPanel>
+          </CardPanel> */}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1.2fr,1fr,1fr]">
-          <CardPanel title="Onboarding empresa" subtitle={company.rnc}>
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className={`badge border ${riskColor(company.riskLevel)}`}>Riesgo {company.riskLevel}</span>
-              {onboardingCase && (
-                <span className={`badge border ${statusBadge(onboardingCase.status)}`}>
-                  {onboardingCase.status.replace('_', ' ')}
-                </span>
-              )}
-              {owner?.pep && <span className="badge border bg-warning/10 text-warning border-warning/30">PEP detectado</span>}
-            </div>
-            <div className="mt-4 space-y-3">
-              <ProgressRow label="Datos legales" value={onboardingCase?.status === 'collecting' ? 60 : 100} />
-              <ProgressRow label="Beneficiarios finales" value={onboardingCase?.status === 'collecting' ? 40 : 100} />
-              <ProgressRow
-                label="Prueba de vida propietario"
-                value={latestLiveness?.passed ? 100 : 35}
-                accent={latestLiveness?.passed ? 'bg-success' : 'bg-warning'}
-              />
-              <ProgressRow
-                label="Screening PEP/Sanciones"
-                value={owner?.pep ? 55 : 100}
-                accent={owner?.pep ? 'bg-warning' : 'bg-primary'}
-              />
-            </div>
-            <div className="mt-4 flex flex-wrap gap-3 text-sm text-base-content/70">
-              <div className="px-3 py-2 rounded-lg bg-base-100 border border-base-300">
-                Reviewer: {onboardingCase?.reviewer ?? 'Asignar'}
-              </div>
-              <div className="px-3 py-2 rounded-lg bg-base-100 border border-base-300">
-                Liveness score: {latestLiveness ? latestLiveness.score.toFixed(2) : 'N/A'}
-              </div>
-              <div className="px-3 py-2 rounded-lg bg-base-100 border border-base-300">
-                Motivo: {onboardingCase?.decisionReason ?? 'Pendiente'}
-              </div>
-            </div>
-          </CardPanel>
-
-          <CardPanel title="Alertas y casos" actionLabel="Ver todas">
+          {/* <CardPanel title="Alertas y casos" actionLabel="Ver todas">
             <div className="space-y-3">
               {openAlerts.slice(0, 3).map((alert) => (
                 <div key={alert.id} className="rounded-lg border border-base-300 bg-base-100 p-3">
@@ -244,34 +272,32 @@ export default async function BackofficePage({ searchParams }: PageProps) {
                 <p className="text-sm text-base-content/60">Sin alertas abiertas. Mantén monitoreo activo.</p>
               )}
             </div>
-          </CardPanel>
+          </CardPanel> */}
 
-          <CardPanel title="Propietario principal">
+          {/* <CardPanel title="Propietario principal">
             <div className="rounded-lg border border-base-300 bg-base-100 p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{owner?.fullName ?? 'Sin nombre'}</p>
-                  <p className="text-sm text-base-content/60">
-                    {owner?.documentType.toUpperCase()} · {owner?.documentNumber}
-                  </p>
+                  <p className="font-medium">Sin propietario asignado</p>
+                  <p className="text-sm text-base-content/60">Completa el paso de propietarios en onboarding.</p>
                 </div>
                 <span className="badge bg-primary/10 text-primary border-primary/30">Verificado</span>
               </div>
               <div className="text-sm text-base-content/70">
-                Nacionalidad: {owner?.nationality}
+                Nacionalidad: N/D
                 <br />
-                PEP: {owner?.pep ? 'Sí' : 'No'}
+                PEP: N/D
                 <br />
-                Última prueba de vida: {latestLiveness ? formatDate(latestLiveness.createdAt) : 'N/A'}
+                Última prueba de vida: N/A
               </div>
               <div className="flex gap-2">
                 <button className="btn btn-sm bg-base-100 border-base-300">Solicitar reintento</button>
                 <button className="btn btn-sm btn-primary text-primary-content">Aprobar</button>
               </div>
             </div>
-          </CardPanel>
+          </CardPanel> */}
         </div>
-
+{/* 
         <div className="grid gap-4 lg:grid-cols-3">
           <SummaryCard
             title="Tarjeta corporativa"
@@ -294,7 +320,7 @@ export default async function BackofficePage({ searchParams }: PageProps) {
             actionLabel="Ver"
             meta="Vencidos: 4 • $950"
           />
-        </div>
+        </div> */}
 
         <CardPanel title="Movimientos recientes" actionLabel="Descargar CSV">
           <div className="overflow-x-auto">

@@ -5,7 +5,8 @@
  * usando las variables de entorno del proyecto.
  */
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 // Tipos para la tabla waitlist
 export interface WaitlistEntry {
@@ -19,32 +20,8 @@ export interface WaitlistEntry {
 
 export type WaitlistInsert = Omit<WaitlistEntry, 'id' | 'created_at'>
 
-// Validación de variables de entorno
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    'Variables de entorno de Supabase no configuradas. ' +
-    'Asegúrate de crear el archivo .env.local con NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY'
-  )
-}
-
-// Crear cliente de Supabase
-export const supabase: SupabaseClient = createClient(
-  supabaseUrl || '',
-  supabaseAnonKey || '',
-  {
-    auth: {
-      persistSession: true,
-    },
-    global: {
-      headers: {
-        'x-application-name': 'facil-do-landing',
-      },
-    },
-  }
-)
+// Cliente con auth-helpers (maneja cookies para middleware)
+export const supabase: SupabaseClient = createPagesBrowserClient()
 
 /**
  * Función helper para insertar en el waitlist

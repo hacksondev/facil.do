@@ -31,6 +31,10 @@ export default function CompanyInfoPage() {
   const firstName = searchParams.get('firstName') ?? ''
   const lastName = searchParams.get('lastName') ?? ''
   const email = searchParams.get('email') ?? ''
+  const initialCaseId = searchParams.get('caseId') ?? ''
+  const initialCompanyId = searchParams.get('companyId') ?? ''
+  const [caseId, setCaseId] = useState(initialCaseId)
+  const [companyId, setCompanyId] = useState(initialCompanyId)
 
   const formatRnc = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 9) // RNC RD: 9 dígitos
@@ -54,7 +58,8 @@ export default function CompanyInfoPage() {
       const validateRes = await fetch('/api/onboarding/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, rnc }),
+        // Solo validar RNC en este paso; el correo se valida en crear cuenta
+        body: JSON.stringify({ rnc }),
       })
       if (!validateRes.ok) {
         const body = await validateRes.json().catch(() => ({}))
@@ -68,8 +73,38 @@ export default function CompanyInfoPage() {
           setLoading(false)
           return
         }
-        throw new Error(body.error ?? 'No se pudo validar duplicados')
+        const detail = body.details ? ` Detalle: ${body.details}` : ''
+        throw new Error((body.error ?? 'No se pudo validar duplicados') + detail)
       }
+
+      const saveRes = await fetch('/api/onboarding/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 'company_info',
+          caseId,
+          companyId,
+          data: {
+            companyName: legalName,
+            rnc,
+            country,
+            phone,
+            industry,
+            description,
+          },
+        }),
+      })
+
+      if (!saveRes.ok) {
+        const body = await saveRes.json().catch(() => ({}))
+        throw new Error(body.error ?? 'No se pudo guardar la empresa')
+      }
+
+      const body = await saveRes.json()
+      const newCaseId = body.caseId as string
+      const newCompanyId = body.companyId as string
+      setCaseId(newCaseId)
+      setCompanyId(newCompanyId)
 
       const params = new URLSearchParams()
       params.set('firstName', firstName)
@@ -81,6 +116,8 @@ export default function CompanyInfoPage() {
       params.set('phone', phone)
       params.set('industry', industry)
       params.set('description', description)
+      if (newCaseId) params.set('caseId', newCaseId)
+      if (newCompanyId) params.set('companyId', newCompanyId)
       router.push(`/backoffice/onboarding/company-address?${params.toString()}`)
     } catch (err: any) {
       console.error('Error validando RNC/correo:', err)
@@ -94,6 +131,8 @@ export default function CompanyInfoPage() {
     params.set('firstName', firstName)
     params.set('lastName', lastName)
     params.set('email', email)
+    if (caseId) params.set('caseId', caseId)
+    if (companyId) params.set('companyId', companyId)
     router.push(`/backoffice/onboarding/create-account?${params.toString()}`)
   }
 

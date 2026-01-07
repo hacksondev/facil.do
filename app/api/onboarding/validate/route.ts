@@ -34,11 +34,16 @@ export async function POST(request: Request) {
 
   try {
     if (email) {
-      const { data: userData, error: emailError } = await supabaseService.auth.admin.getUserByEmail(email)
+      const { data: usersData, error: emailError } = await supabaseService.auth.admin.listUsers({
+        page: 1,
+        perPage: 1,
+        email,
+      })
       if (emailError && emailError.message && emailError.message.toLowerCase().includes('invalid')) {
         return NextResponse.json({ error: 'Correo inválido' }, { status: 400 })
       }
-      if (userData?.user) {
+      if (emailError) throw emailError
+      if (usersData?.users?.length) {
         conflicts.email = true
       }
     }
@@ -91,7 +96,10 @@ export async function POST(request: Request) {
   } catch (err: any) {
     console.error('Error validando onboarding:', err)
     return NextResponse.json(
-      { error: 'No se pudo validar duplicados. Intenta de nuevo o contacta soporte.' },
+      {
+        error: 'No se pudo validar duplicados. Intenta de nuevo o contacta soporte.',
+        details: err?.message,
+      },
       { status: 500 },
     )
   }

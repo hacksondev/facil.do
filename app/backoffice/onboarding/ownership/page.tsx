@@ -25,6 +25,11 @@ export default function OwnershipPage() {
   const [livenessScore, setLivenessScore] = useState<number | null>(
     searchParams.get('livenessScore') ? Number(searchParams.get('livenessScore')) : null,
   )
+  const [error, setError] = useState<string | null>(null)
+  const caseId = searchParams.get('caseId') ?? ''
+  const companyId = searchParams.get('companyId') ?? ''
+  const initialPersonId = searchParams.get('personId') ?? ''
+  const [personId, setPersonId] = useState(initialPersonId)
 
   const formatCedula = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 11) // cédula RD: 11 dígitos
@@ -46,13 +51,51 @@ export default function OwnershipPage() {
     if (livenessDone && livenessScore !== null) {
       params.set('livenessScore', String(livenessScore))
     }
+    if (caseId) params.set('caseId', caseId)
+    if (companyId) params.set('companyId', companyId)
+    if (personId) params.set('personId', personId)
     return params
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    router.push(`/backoffice/onboarding/documents?${forwardParams().toString()}`)
+    setError(null)
+    try {
+      const res = await fetch('/api/onboarding/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 'owner',
+          caseId: caseId || undefined,
+          companyId: companyId || undefined,
+          personId: personId || undefined,
+          data: {
+            ownerName,
+            ownerId,
+            pep,
+            ownershipPct,
+            livenessScore,
+          },
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? 'No se pudo guardar el propietario')
+      }
+      const body = await res.json()
+      if (body.personId) {
+        setPersonId(body.personId as string)
+      }
+      const params = forwardParams()
+      if (body.personId) params.set('personId', body.personId)
+      router.push(`/backoffice/onboarding/documents?${params.toString()}`)
+    } catch (err: any) {
+      console.error('Error guardando propietario', err)
+      setError(err?.message ?? 'No se pudo guardar el propietario')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const goBack = () => {
@@ -173,6 +216,8 @@ export default function OwnershipPage() {
                   </div>
                 </div>
               </div>
+
+              {error && <p className="text-sm text-error">{error}</p>}
 
               <div className="flex items-center justify-between pt-2">
                 <div className="text-sm text-base-content/60">Paso 3 de 6</div>

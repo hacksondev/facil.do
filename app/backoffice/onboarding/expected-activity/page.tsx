@@ -19,19 +19,49 @@ export default function ExpectedActivityPage() {
   const [countries, setCountries] = useState(searchParams.get('countries') ?? 'República Dominicana')
   const [fundingSource, setFundingSource] = useState(searchParams.get('fundingSource') ?? '')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const caseId = searchParams.get('caseId') ?? undefined
+  const companyId = searchParams.get('companyId') ?? undefined
+  const personId = searchParams.get('personId') ?? undefined
 
   const forwardParams = () => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('monthlyVolume', monthlyVolume)
     params.set('countries', countries)
     params.set('fundingSource', fundingSource)
+    if (caseId) params.set('caseId', caseId)
+    if (companyId) params.set('companyId', companyId)
+    if (personId) params.set('personId', personId)
     return params
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    router.push(`/backoffice/onboarding/follow-up?${forwardParams().toString()}`)
+    setError(null)
+    try {
+      const res = await fetch('/api/onboarding/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 'expected_activity',
+          caseId,
+          companyId,
+          personId,
+          data: { monthlyVolume, countries, fundingSource },
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? 'No se pudo guardar la actividad esperada')
+      }
+      router.push(`/backoffice/onboarding/follow-up?${forwardParams().toString()}`)
+    } catch (err: any) {
+      console.error('Error guardando actividad', err)
+      setError(err?.message ?? 'No se pudo guardar la actividad esperada')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleBack = () => {
@@ -113,6 +143,8 @@ export default function ExpectedActivityPage() {
                   />
                 </label>
               </div>
+
+              {error && <p className="text-sm text-error">{error}</p>}
 
               <div className="flex items-center justify-between pt-2">
                 <div className="text-sm text-base-content/60">Paso 5 de 6</div>

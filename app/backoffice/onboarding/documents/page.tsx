@@ -61,6 +61,7 @@ export default function DocumentsPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const fileInputs = useRef<Record<string, HTMLInputElement | null>>({})
+  const caseId = searchParams.get('caseId') ?? undefined
   const companyId = searchParams.get('companyId') ?? undefined
   const personId = searchParams.get('personId') ?? undefined
 
@@ -68,6 +69,9 @@ export default function DocumentsPage() {
     const params = new URLSearchParams(searchParams.toString())
     params.set('docs', JSON.stringify(docChecks))
     params.set('uploads', JSON.stringify(uploads))
+    if (caseId) params.set('caseId', caseId)
+    if (companyId) params.set('companyId', companyId)
+    if (personId) params.set('personId', personId)
     return params
   }
 

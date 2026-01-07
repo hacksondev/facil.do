@@ -17,17 +17,47 @@ export default function FollowUpPage() {
   const searchParams = useSearchParams()
   const [additionalInfo, setAdditionalInfo] = useState(searchParams.get('additionalInfo') ?? '')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const caseId = searchParams.get('caseId') ?? undefined
+  const companyId = searchParams.get('companyId') ?? undefined
+  const personId = searchParams.get('personId') ?? undefined
 
   const forwardParams = () => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('additionalInfo', additionalInfo)
+    if (caseId) params.set('caseId', caseId)
+    if (companyId) params.set('companyId', companyId)
+    if (personId) params.set('personId', personId)
     return params
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    router.push(`/backoffice/onboarding/complete?${forwardParams().toString()}`)
+    setError(null)
+    try {
+      const res = await fetch('/api/onboarding/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 'follow_up',
+          caseId,
+          companyId,
+          personId,
+          data: { additionalInfo },
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? 'No se pudo finalizar el onboarding')
+      }
+      router.push(`/backoffice/onboarding/complete?${forwardParams().toString()}`)
+    } catch (err: any) {
+      console.error('Error finalizando onboarding', err)
+      setError(err?.message ?? 'No se pudo finalizar el onboarding')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleBack = () => {
@@ -84,6 +114,8 @@ export default function FollowUpPage() {
                   placeholder="Describe casos de uso, clientes clave o certificaciones."
                 />
               </label>
+
+              {error && <p className="text-sm text-error">{error}</p>}
 
               <div className="flex items-center justify-between pt-2">
                 <div className="text-sm text-base-content/60">Paso 6 de 6</div>

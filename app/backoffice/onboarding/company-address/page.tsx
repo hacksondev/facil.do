@@ -22,6 +22,10 @@ export default function CompanyAddressPage() {
   const [postalCode, setPostalCode] = useState(searchParams.get('postalCode') ?? '')
   const [country, setCountry] = useState('República Dominicana')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const caseId = searchParams.get('caseId') ?? ''
+  const companyId = searchParams.get('companyId') ?? ''
 
   const forwardParams = () => {
     const params = new URLSearchParams(searchParams.toString())
@@ -30,13 +34,37 @@ export default function CompanyAddressPage() {
     params.set('province', province)
     params.set('postalCode', postalCode)
     params.set('country', country)
+    if (caseId) params.set('caseId', caseId)
+    if (companyId) params.set('companyId', companyId)
     return params
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    router.push(`/backoffice/onboarding/ownership?${forwardParams().toString()}`)
+    setError(null)
+    try {
+      const res = await fetch('/api/onboarding/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 'company_address',
+          caseId: caseId || undefined,
+          companyId: companyId || undefined,
+          data: { address, city, province, postalCode, country },
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? 'No se pudo guardar la dirección')
+      }
+      router.push(`/backoffice/onboarding/ownership?${forwardParams().toString()}`)
+    } catch (err: any) {
+      console.error('Error guardando dirección', err)
+      setError(err?.message ?? 'No se pudo guardar la dirección')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleBack = () => {
@@ -142,6 +170,8 @@ export default function CompanyAddressPage() {
                   </label>
                 </div>
               </div>
+
+              {error && <p className="text-sm text-error">{error}</p>}
 
               <div className="flex items-center justify-between pt-2">
                 <div className="text-sm text-base-content/60">Paso 2 de 6</div>
