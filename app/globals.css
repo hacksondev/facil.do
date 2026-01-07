@@ -68,30 +68,20 @@
 
   /* Gradientes de fondo */
   .gradient-mesh {
-    background:
-      radial-gradient(at 40% 20%, oklch(var(--p) / 0.08) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, oklch(var(--s) / 0.06) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, oklch(var(--p) / 0.04) 0px, transparent 50%),
-      oklch(var(--b2));
+
   }
 
   .gradient-hero {
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -20%, oklch(var(--p) / 0.12), transparent),
-      linear-gradient(180deg, oklch(var(--b1)) 0%, oklch(var(--b2)) 100%);
+  
   }
 
   /* Patrón de puntos */
   .dot-pattern {
-    background-image: radial-gradient(oklch(var(--p) / 0.15) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
   /* Patrón de grid */
   .grid-pattern {
-    background-image:
-      linear-gradient(oklch(var(--p) / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, oklch(var(--p) / 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
@@ -118,11 +108,11 @@
 
 /* Botón primario mejorado */
 .btn-primary {
-  @apply shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30;
+  @apply hover:shadow-xl hover:shadow-primary/30;
 }
 
 .card {
-  @apply shadow-lg shadow-base-content/5;
+  @apply shadow-base-content/5;
 }
 
 /* Input focus mejorado */

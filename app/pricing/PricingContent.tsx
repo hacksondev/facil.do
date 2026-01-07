@@ -217,7 +217,7 @@ export default function PricingContent() {
           <div className="absolute inset-0 grid-pattern opacity-30" />
           <div className="container-custom relative z-10">
             <div className="max-w-4xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-base-100/80 px-4 py-2 border border-base-300 shadow-sm backdrop-blur">
+              <div className="inline-flex items-center gap-2 rounded-full bg-base-100/80 px-4 py-2 border border-base-300  backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-success animate-pulse-soft" />
                 <span className="text-sm font-medium text-base-content/70">Precios claros</span>
               </div>
@@ -230,7 +230,7 @@ export default function PricingContent() {
               </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-4">
-                <div className="inline-flex items-center gap-1 bg-base-100/80 p-1 rounded-2xl border border-base-300 shadow-sm backdrop-blur">
+                <div className="inline-flex items-center gap-1 bg-base-100/80 p-1 rounded-2xl border border-base-300 backdrop-blur">
                   {(['monthly', 'annual'] as BillingCycle[]).map((cycle) => (
                     <button
                       key={cycle}

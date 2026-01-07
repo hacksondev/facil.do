@@ -24,7 +24,7 @@ const values = [
 ]
 
 const milestones = [
-  { label: 'Fundación', value: '2024', detail: 'Arrancamos con el primer prototipo y pruebas con comercios.' },
+  { label: 'Fundación', value: '2026', detail: 'Arrancamos con el primer prototipo y pruebas con comercios.' },
   { label: 'Validación', value: '500+', detail: 'Negocios en lista de espera en menos de 90 días.' },
   { label: 'Operación', value: '24/7', detail: 'Plataforma diseñada para operar en cualquier dispositivo.' },
 ]
@@ -39,12 +39,12 @@ const team = [
     name: 'Starling Javier Diaz',
     role: 'CTO & Co-founder',
     focus: 'Infraestructura, seguridad y datos',
-  },
-  {
-    name: 'Barbara De Peña',
-    role: 'Head of Operations',
-    focus: 'Onboarding y soporte a negocios',
-  },
+  }
+  // {
+  //   name: 'Barbara De Peña',
+  //   role: 'Head of Operations',
+  //   focus: 'Onboarding y soporte a negocios',
+  // },
 ]
 
 export default function AboutContent() {
@@ -70,7 +70,7 @@ export default function AboutContent() {
     
           <div className="container-custom relative z-10">
             <div className="max-w-4xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-base-100/80 px-4 py-2 border border-base-300 shadow-sm backdrop-blur">
+              <div className="inline-flex items-center gap-2 rounded-full bg-base-100/80 px-4 py-2 border border-base-300  backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
                 <span className="text-sm font-medium text-base-content/70">Nuestro porqué</span>
               </div>
@@ -85,7 +85,7 @@ export default function AboutContent() {
                 {milestones.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-base-300 bg-base-100/80 p-4 shadow-sm backdrop-blur"
+                    className="rounded-2xl border border-base-300 bg-base-100/80 p-4 backdrop-blur"
                   >
                     <p className="text-sm text-base-content/60">{item.label}</p>
                     <p className="text-2xl font-bold text-base-content mt-1">{item.value}</p>
@@ -99,8 +99,8 @@ export default function AboutContent() {
 
         {/* Misión y cómo trabajamos */}
         <section className="section pt-0">
-          <div className="container-custom grid gap-10 lg:grid-cols-[1.05fr,0.95fr]">
-            <div className="card bg-base-100 shadow-xl border border-base-300">
+          <div className="container-custom grid gap-10 ">
+            <div className="card bg-base-100  border border-base-300">
               <div className="card-body space-y-4">
                 <div className="badge badge-outline badge-lg text-base-content/70">Misión</div>
                 <h2 className="text-2xl font-bold text-base-content">Finanzas simples para negocios que no pueden parar</h2>
@@ -110,7 +110,7 @@ export default function AboutContent() {
                 </p>
                 <div className="grid gap-3 md:grid-cols-2">
                   {[
-                    { title: 'Apertura 100% digital', text: 'Sin sucursales ni citas. Documentos desde tu móvil.' },
+                    { title: 'Apertura 100% digital', text: 'Sin sucursales ni citas. Documentos desde tu app o web.' },
                     { title: 'Control en tiempo real', text: 'Alertas, límites y conciliación automática.' },
                     { title: 'Listo para el contador', text: 'Reportes claros y exportables cuando los necesitas.' },
                     { title: 'Soporte en minutos', text: 'Chat, correo y acompañamiento personalizado.' },
@@ -124,7 +124,7 @@ export default function AboutContent() {
               </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl border border-base-300">
+            {/* <div className="card bg-base-100 border border-base-300">
               <div className="card-body space-y-4">
                 <div className="badge badge-outline badge-lg text-base-content/70">Cómo trabajamos</div>
                 <h3 className="text-xl font-bold text-base-content">Pruebas rápidas, feedback real</h3>
@@ -147,7 +147,7 @@ export default function AboutContent() {
                   </li>
                 </ul>
               </div>
-            </div>
+            </div> */}
           </div>
         </section>
 
@@ -160,7 +160,7 @@ export default function AboutContent() {
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {values.map((value) => (
-                <div key={value.title} className="p-6 rounded-2xl border border-base-300 bg-base-100 shadow-sm">
+                <div key={value.title} className="p-6 rounded-2xl border border-base-300 bg-base-100">
                   <h4 className="text-lg font-semibold text-base-content">{value.title}</h4>
                   <p className="text-base text-base-content/70 mt-2">{value.description}</p>
                 </div>
@@ -184,7 +184,7 @@ export default function AboutContent() {
 
             <div className="grid gap-6 md:grid-cols-3">
               {team.map((member) => (
-                <div key={member.name} className="card bg-base-100 border border-base-300 shadow-lg shadow-base-300/30">
+                <div key={member.name} className="card bg-base-100 border border-base-300">
                   <div className="card-body space-y-2">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
                       {member.name
@@ -206,7 +206,7 @@ export default function AboutContent() {
         {/* CTA final */}
         <section className="section pt-0">
           <div className="container-custom">
-            <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary to-secondary text-primary-content shadow-xl">
+            <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary to-secondary text-primary-content">
               <div className="absolute inset-0 opacity-20 grid-pattern" />
               <div className="relative p-8 space-y-4">
                 <p className="text-sm font-semibold uppercase tracking-wide">Hablemos</p>

@@ -50,7 +50,12 @@ export default function TerminosPage() {
               </svg>
               <div>
                 <h3 className="font-bold">Aviso Importante</h3>
-                <p className="text-sm">Facil.do NO es un banco ni una entidad financiera regulada. Somos una plataforma tecnológica que facilita servicios financieros a través de alianzas con instituciones bancarias locales debidamente autorizadas.</p>
+                <p className="text-sm">
+                  Facil.do es una empresa de tecnología financiera y no es un banco ni una institución asegurada por la FDIC.
+                  Los servicios financieros son proporcionados por instituciones bancarias asociadas, debidamente autorizadas y miembros de la FDIC, según corresponda.
+                  El seguro de depósitos aplica únicamente en caso de quiebra de la institución financiera que mantiene los fondos.
+                  Facil.do actúa como una plataforma tecnológica que facilita el acceso a servicios financieros a través de alianzas con entidades bancarias locales.
+                </p>
               </div>
             </div>
 

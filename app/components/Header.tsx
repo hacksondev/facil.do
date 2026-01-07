@@ -87,13 +87,13 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
         {/* Navbar */}
         <header
           className={`navbar fixed top-0 left-0 right-0 z-50 px-4 lg:px-8 transition-all duration-300 ${
-            isScrolled ? 'navbar-glass shadow-sm py-2' : 'bg-transparent py-4'
+            isScrolled ? 'navbar-glass py-2' : 'bg-transparent py-4'
           }`}
         >
           {/* Logo */}
           <div className="navbar-start">
             <a href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                 <svg className="w-5 h-5 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>

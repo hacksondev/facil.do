@@ -25,20 +25,10 @@ export default function Hero({ onCtaClick }: HeroProps) {
       <div className="hero-content text-center lg:text-left relative z-10">
         <div className="max-w-4xl">
           {/* Badge */}
-          <div className="mb-8 animate-fade-in animate-fill-both flex justify-center lg:justify-start">
-            <div className="badge badge-lg badge-outline gap-2 px-4 py-3">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-success"></span>
-              </span>
-              Próximamente disponible
-            </div>
-          </div>
-
-          {/* Headline */}
+  
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-base-content leading-tight mb-6 animate-fade-in-up animate-fill-both animate-delay-100">
             La cuenta empresarial digital diseñada para{' '}
-            <span className="text-gradient">MIPYMES dominicanas</span>
+            <span className="text-base-content">MIPYMES dominicanas</span>
           </h1>
 
           {/* Subheadline */}
