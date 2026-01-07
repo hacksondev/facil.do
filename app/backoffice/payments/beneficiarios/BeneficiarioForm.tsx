@@ -15,6 +15,9 @@ export default function BeneficiarioForm({ companyId }: Props) {
   const [accountNumber, setAccountNumber] = useState('')
   const [accountType, setAccountType] = useState('corriente')
   const [currency, setCurrency] = useState('DOP')
+  const [documentType, setDocumentType] = useState<'rnc' | 'cedula' | 'pasaporte'>('rnc')
+  const [documentNumber, setDocumentNumber] = useState('')
+  const [alias, setAlias] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -34,6 +37,9 @@ export default function BeneficiarioForm({ companyId }: Props) {
           accountNumber,
           accountType,
           currency,
+          documentType,
+          documentNumber,
+          alias,
         }),
       })
       if (!res.ok) {
@@ -47,6 +53,9 @@ export default function BeneficiarioForm({ companyId }: Props) {
       setAccountNumber('')
       setAccountType('corriente')
       setCurrency('DOP')
+      setDocumentType('rnc')
+      setDocumentNumber('')
+      setAlias('')
     } catch (err: any) {
       setError(err?.message ?? 'Error al crear beneficiario')
     } finally {
@@ -116,6 +125,38 @@ export default function BeneficiarioForm({ companyId }: Props) {
           <option value="DOP">DOP</option>
           <option value="USD">USD</option>
         </select>
+      </label>
+      <label className="form-control w-full">
+        <span className="label-text text-sm font-medium">Tipo de documento</span>
+        <select
+          className="select select-bordered w-full"
+          value={documentType}
+          onChange={(e) => setDocumentType(e.target.value as any)}
+        >
+          <option value="rnc">RNC</option>
+          <option value="cedula">Cédula</option>
+          <option value="pasaporte">Pasaporte</option>
+        </select>
+      </label>
+      <label className="form-control w-full">
+        <span className="label-text text-sm font-medium">Número de documento</span>
+        <input
+          type="text"
+          className="input input-bordered w-full"
+          value={documentNumber}
+          onChange={(e) => setDocumentNumber(e.target.value)}
+          required
+        />
+      </label>
+      <label className="form-control w-full md:col-span-2">
+        <span className="label-text text-sm font-medium">Alias (opcional)</span>
+        <input
+          type="text"
+          className="input input-bordered w-full"
+          value={alias}
+          onChange={(e) => setAlias(e.target.value)}
+          placeholder="Ej: Proveedor logística"
+        />
       </label>
       {error && <p className="text-sm text-error md:col-span-2">{error}</p>}
       <div className="md:col-span-2 flex justify-end gap-2">

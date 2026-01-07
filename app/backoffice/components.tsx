@@ -103,7 +103,8 @@ export function BackofficeShell({
   title,
   subtitle,
   actionLabel = 'Mover fondos',
-}: ShellProps) {
+  onActionClick,
+}: ShellProps & { onActionClick?: () => void }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const companyQuery = activeCompany?.id ? `?companyId=${activeCompany.id}` : ''
   const navItems = buildNavItems(companyQuery)
@@ -123,6 +124,7 @@ export function BackofficeShell({
               subtitle={subtitle ?? activeCompany?.name}
               searchPlaceholder="Busca onboarding, cuentas, personas..."
               actionLabel={actionLabel}
+              onActionClick={onActionClick}
               onMenuClick={() => setMobileOpen(true)}
             />
             <MobileDrawer
@@ -401,12 +403,14 @@ function TopBar({
   searchPlaceholder,
   actionLabel,
   onMenuClick,
+  onActionClick,
 }: {
   title: string
   subtitle?: string
   searchPlaceholder?: string
   actionLabel?: string
   onMenuClick?: () => void
+  onActionClick?: () => void
 }) {
   return (
     <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -434,7 +438,11 @@ function TopBar({
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-base-content/60">⌘K</span>
         </div>
-        {actionLabel && <button className="btn btn-primary text-primary-content">{actionLabel}</button>}
+        {actionLabel && (
+          <button className="btn btn-primary text-primary-content" type="button" onClick={onActionClick}>
+            {actionLabel}
+          </button>
+        )}
       </div>
     </header>
   )

@@ -1,8 +1,7 @@
 import { cookies } from 'next/headers'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { BackofficeShell, CardPanel } from '../../components'
-import { Company, formatCurrency } from '../../utils'
-import BeneficiarioForm from './BeneficiarioForm'
+import { Company } from '../../utils'
+import BeneficiariosClient from './BeneficiariosClient'
 
 type PageProps = { searchParams?: { companyId?: string } }
 
@@ -70,87 +69,5 @@ export default async function BeneficiariosPage({ searchParams }: PageProps) {
 
   const beneficiaries = beneficiariesRaw ?? []
 
-  return (
-    <BackofficeShell
-      companies={companies}
-      activeCompany={activeCompany}
-      activePath="/backoffice/payments"
-      title="Beneficiarios"
-      subtitle="Pagos"
-      actionLabel="Nuevo beneficiario"
-    >
-      <div className="flex justify-end mb-3">
-        <button
-          className="btn btn-primary text-primary-content"
-          onClick={() => {
-            const dialog = document.getElementById('modal-beneficiario') as HTMLDialogElement | null
-            dialog?.showModal()
-          }}
-        >
-          Nuevo beneficiario
-        </button>
-      </div>
-
-      <CardPanel title="Beneficiarios">
-        <div className="overflow-x-auto">
-          <table className="table table-zebra w-full">
-            <thead>
-              <tr className="text-sm text-base-content/70">
-                <th>Nombre</th>
-                <th>Banco</th>
-                <th>Cuenta</th>
-                <th className="text-right">Moneda</th>
-                <th className="text-right">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {beneficiaries.map((b) => (
-                <tr key={b.id}>
-                  <td>
-                    <div className="font-medium">{b.name}</div>
-                    <div className="text-xs text-base-content/60">{b.email}</div>
-                  </td>
-                  <td className="text-sm text-base-content/70">{b.bank_name}</td>
-                  <td className="text-sm text-base-content/70">{b.account_number}</td>
-                  <td className="text-right text-sm font-semibold">{b.currency}</td>
-                  <td className="text-right">
-                    <span
-                      className={`badge border ${
-                        b.status === 'active'
-                          ? 'bg-success/10 text-success border-success/30'
-                          : b.status === 'pending'
-                            ? 'bg-warning/10 text-warning border-warning/30'
-                            : 'bg-error/10 text-error border-error/30'
-                      }`}
-                    >
-                      {b.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-              {beneficiaries.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="text-center text-sm text-base-content/60 py-4">
-                    No hay beneficiarios registrados.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </CardPanel>
-
-      <dialog id="modal-beneficiario" className="modal">
-        <div className="modal-box max-w-2xl">
-          <h3 className="font-semibold text-lg mb-3">Nuevo beneficiario</h3>
-          <BeneficiarioForm companyId={activeCompany.id} />
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn">Cerrar</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    </BackofficeShell>
-  )
+  return <BeneficiariosClient companies={companies} activeCompany={activeCompany} beneficiaries={beneficiaries} />
 }

@@ -22,9 +22,12 @@ export async function POST(req: Request) {
     accountNumber?: string
     accountType?: string
     currency?: string
+    documentType?: 'rnc' | 'cedula' | 'pasaporte'
+    documentNumber?: string
+    alias?: string
   }
 
-  if (!body?.companyId || !body?.name || !body?.accountNumber) {
+  if (!body?.companyId || !body?.name || !body?.accountNumber || !body?.documentNumber) {
     return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 })
   }
 
@@ -51,6 +54,9 @@ export async function POST(req: Request) {
       currency: body.currency || 'DOP',
       status: 'active',
       created_by: user.id,
+      document_type: body.documentType ?? 'rnc',
+      document_number: body.documentNumber,
+      alias: body.alias,
     })
 
     if (insertError) throw insertError
