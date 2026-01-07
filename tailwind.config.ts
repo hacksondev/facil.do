@@ -51,8 +51,7 @@ const config: Config = {
   daisyui: {
     themes: [
       {
-        mercury: {
-          // Colores principales - Mercury inspired
+        facil: {
           "primary": "#5266eb",
           "primary-content": "#ffffff",
           "secondary": "#7856d8",
@@ -86,7 +85,7 @@ const config: Config = {
         },
       },
     ],
-    darkTheme: "mercury",
+    darkTheme: "facil",
     base: true,
     styled: true,
     utils: true,

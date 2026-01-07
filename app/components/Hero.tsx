@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * Componente Hero - DaisyUI + Mercury Design
+ * Componente Hero - DaisyUI + Facil Design
  *
  * Sección principal con gradientes y animaciones.
  */
@@ -50,7 +50,7 @@ export default function Hero({ onCtaClick }: HeroProps) {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12 animate-fade-in-up animate-fill-both animate-delay-300">
             <button onClick={onCtaClick} className="btn btn-primary btn-lg">
-              Apúntateme
+              Separa tu cupo
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

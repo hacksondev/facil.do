@@ -1,19 +1,30 @@
 'use client'
 
 /**
- * Componente Header - DaisyUI + Mercury Design
+ * Componente Header - DaisyUI + Facil Design
  *
- * Navbar con drawer para móvil y efecto glass en scroll.
+ * Navbar con drawer para móvil, efecto glass en scroll y soporte
+ * para enlaces internos o rutas (ej. página de pricing).
  */
 
 import { useState, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+
+type NavLink = {
+  href: string
+  label: string
+  type?: 'anchor' | 'route'
+}
 
 interface HeaderProps {
   onCtaClick: () => void
+  navLinks?: NavLink[]
 }
 
-export default function Header({ onCtaClick }: HeaderProps) {
+export default function Header({ onCtaClick, navLinks }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,16 +34,48 @@ export default function Header({ onCtaClick }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const navLinks = [
-    { href: '#features', label: 'Características' },
-    { href: '#waitlist', label: 'Regístrate' },
+  const defaultNavLinks: NavLink[] = [
+    { href: '#features', label: 'Características', type: 'anchor' },
+    { href: '/pricing', label: 'Precios', type: 'route' },
+    { href: '/about', label: 'Nosotros', type: 'route' },
+    { href: '#waitlist', label: 'Regístrate', type: 'anchor' },
   ]
 
-  const handleNavClick = (href: string) => {
+  const linksToRender = navLinks ?? defaultNavLinks
+
+  const closeDrawer = () => {
     const checkbox = document.getElementById('mobile-drawer') as HTMLInputElement
     if (checkbox) checkbox.checked = false
-    const element = document.querySelector(href)
-    element?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleNavClick = (link: NavLink) => {
+    const isRoute = link.type === 'route' || link.href.startsWith('/')
+
+    if (isRoute) {
+      // Si es un hash hacia home y ya estamos en '/', hacemos scroll suave
+      if (link.href.startsWith('/#') && pathname === '/') {
+        const targetId = link.href.split('#')[1]
+        if (targetId) {
+          document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })
+        }
+        closeDrawer()
+        return
+      }
+
+      router.push(link.href)
+      closeDrawer()
+      return
+    }
+
+    // Anclas internas dentro de la misma página
+    if (link.href.startsWith('#')) {
+      document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' })
+      closeDrawer()
+      return
+    }
+
+    router.push(link.href)
+    closeDrawer()
   }
 
   return (
@@ -50,11 +93,11 @@ export default function Header({ onCtaClick }: HeaderProps) {
           {/* Logo */}
           <div className="navbar-start">
             <a href="/" className="flex items-center gap-2.5 group">
-              {/* <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
                 <svg className="w-5 h-5 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-              </div> */}
+              </div>
               <span className="text-lg font-semibold text-base-content">Facil.do</span>
             </a>
           </div>
@@ -62,10 +105,10 @@ export default function Header({ onCtaClick }: HeaderProps) {
           {/* Desktop Navigation */}
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1 gap-1">
-              {navLinks.map((link) => (
+              {linksToRender.map((link) => (
                 <li key={link.href}>
                   <button
-                    onClick={() => handleNavClick(link.href)}
+                    onClick={() => handleNavClick(link)}
                     className="font-medium text-base-content/70 hover:text-base-content hover:bg-base-200/50"
                   >
                     {link.label}
@@ -77,8 +120,8 @@ export default function Header({ onCtaClick }: HeaderProps) {
 
           {/* Desktop CTA + Mobile Menu Button */}
           <div className="navbar-end gap-2">
-            <button onClick={onCtaClick} className="btn btn-primary btn-sm hidden lg:flex">
-              Apúntateme
+            <button onClick={onCtaClick} className="btn btn-primary btn-md hidden lg:flex">
+              Separa tu cupo
             </button>
 
             {/* Mobile menu button */}
@@ -108,10 +151,10 @@ export default function Header({ onCtaClick }: HeaderProps) {
 
           {/* Navigation Links */}
           <ul className="space-y-2 flex-1">
-            {navLinks.map((link) => (
+            {linksToRender.map((link) => (
               <li key={link.href}>
                 <button
-                  onClick={() => handleNavClick(link.href)}
+                  onClick={() => handleNavClick(link)}
                   className="w-full flex items-center justify-between py-3 px-4 rounded-xl text-base font-medium hover:bg-base-200 transition-colors"
                 >
                   {link.label}
@@ -133,7 +176,7 @@ export default function Header({ onCtaClick }: HeaderProps) {
               }}
               className="btn btn-primary w-full"
             >
-              Apúntateme
+              Separa tu cupo
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

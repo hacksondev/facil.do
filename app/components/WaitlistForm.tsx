@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * Componente WaitlistForm - DaisyUI + Mercury Design
+ * Componente WaitlistForm - DaisyUI + Facil Design
  *
  * Formulario de captura de leads con validación.
  */
@@ -141,7 +141,7 @@ const WaitlistForm = forwardRef<HTMLDivElement>((_, ref) => {
   // Form
   return (
     <section ref={ref} className="section relative overflow-hidden" id="waitlist">
-      <div className="absolute inset-0 gradient-mesh" />
+      <div className="absolute inset-0" />
       <div className="absolute inset-0 dot-pattern opacity-20" />
       <div className="absolute top-10 left-[5%] w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
       <div className="absolute bottom-10 right-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />

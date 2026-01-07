@@ -1,5 +1,5 @@
 /**
- * Componente ValueProposition - DaisyUI + Mercury Design
+ * Componente ValueProposition - DaisyUI + Facil Design
  *
  * Sección comparativa problema vs solución.
  */

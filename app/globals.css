@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================
-   FINTECH B2B LANDING - DAISYUI + MERCURY THEME
+   FINTECH B2B LANDING - DAISYUI
    ============================================ */
 
 /* Importar fuente Inter */
@@ -121,7 +121,6 @@
   @apply shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30;
 }
 
-/* Card con sombra Mercury-style */
 .card {
   @apply shadow-lg shadow-base-content/5;
 }

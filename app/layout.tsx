@@ -84,7 +84,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#5266eb',
+  themeColor: '#f5f4f0',
 }
 
 /**
@@ -101,7 +101,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" data-theme="mercury" className="scroll-smooth">
+    <html lang="es" data-theme="facil" className="scroll-smooth">
       <head>
         {/* Preconnect para performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

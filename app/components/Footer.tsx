@@ -1,5 +1,5 @@
 /**
- * Componente Footer - DaisyUI + Mercury Design
+ * Componente Footer - DaisyUI + Facil Design
  *
  * Pie de página minimalista y elegante.
  */
@@ -75,17 +75,19 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
+                  <a href="/about" className="link link-hover">
+                    Nosotros
+                  </a>
+                </li>
+                <li>
                   <a href="#waitlist" className="link link-hover">
                     Regístrate
                   </a>
                 </li>
                 <li>
-                  <span className="inline-flex items-center gap-2 opacity-50">
+                  <a href="/pricing" className="link link-hover">
                     Precios
-                    <span className="badge badge-sm badge-ghost">
-                      Pronto
-                    </span>
-                  </span>
+                  </a>
                 </li>
               </ul>
             </div>

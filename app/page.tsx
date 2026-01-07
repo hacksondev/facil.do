@@ -1,18 +1,19 @@
 'use client'
 
 /**
- * Página principal del Landing Page - Mercury-Inspired Design
+ * Página principal del Landing Page - Facil-Inspired Design
  *
  * Landing page premium mobile-first para captura de leads.
  */
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import ValueProposition from './components/ValueProposition'
 import Features from './components/Features'
 import WaitlistForm from './components/WaitlistForm'
 import Footer from './components/Footer'
+import { initFirebaseAnalytics } from './services/firebaseClient'
 
 export default function HomePage() {
   const waitlistRef = useRef<HTMLDivElement>(null)
@@ -23,6 +24,10 @@ export default function HomePage() {
       block: 'start',
     })
   }
+
+  useEffect(() => {
+    initFirebaseAnalytics()
+  }, [])
 
   return (
     <>

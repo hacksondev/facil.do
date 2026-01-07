@@ -158,13 +158,13 @@ docker-compose down
 
 ### Tema DaisyUI
 
-Edita `tailwind.config.ts` para modificar el tema "mercury":
+Edita `tailwind.config.ts` para modificar el tema "facil":
 
 ```typescript
 daisyui: {
   themes: [
     {
-      mercury: {
+      facil: {
         "primary": "#5266eb",
         "secondary": "#7856d8",
         // ...
