@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   FINTECH B2B LANDING - DAISYUI + MERCURY THEME
+   ============================================ */
+
+/* Importar fuente Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ============================================
+   CSS CUSTOM PROPERTIES
+   ============================================ */
+:root {
+  --section-padding: 4rem;
+  --container-max: 72rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-padding: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --section-padding: 8rem;
+  }
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+@layer base {
+  html {
+    @apply scroll-smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-sans;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Scroll margin para anchors */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
+@layer components {
+  /* Sección estándar */
+  .section {
+    @apply px-5 md:px-8 lg:px-12;
+    padding-top: var(--section-padding);
+    padding-bottom: var(--section-padding);
+  }
+
+  /* Container */
+  .container-custom {
+    @apply max-w-6xl mx-auto;
+  }
+
+  /* Gradientes de fondo */
+  .gradient-mesh {
+    background:
+      radial-gradient(at 40% 20%, oklch(var(--p) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, oklch(var(--s) / 0.06) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, oklch(var(--p) / 0.04) 0px, transparent 50%),
+      oklch(var(--b2));
+  }
+
+  .gradient-hero {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, oklch(var(--p) / 0.12), transparent),
+      linear-gradient(180deg, oklch(var(--b1)) 0%, oklch(var(--b2)) 100%);
+  }
+
+  /* Patrón de puntos */
+  .dot-pattern {
+    background-image: radial-gradient(oklch(var(--p) / 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Patrón de grid */
+  .grid-pattern {
+    background-image:
+      linear-gradient(oklch(var(--p) / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--p) / 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+
+  /* Animaciones con delay */
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+
+  .animate-fill-both {
+    animation-fill-mode: both;
+  }
+}
+
+/* ============================================
+   DAISY UI CUSTOMIZATIONS
+   ============================================ */
+
+/* Botón primario mejorado */
+.btn-primary {
+  @apply shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30;
+}
+
+/* Card con sombra Mercury-style */
+.card {
+  @apply shadow-lg shadow-base-content/5;
+}
+
+/* Input focus mejorado */
+.input:focus,
+.select:focus,
+.textarea:focus {
+  @apply ring-4 ring-primary/10;
+}
+
+/* Badge con borde */
+.badge-outline {
+  @apply border-primary/20;
+}
+
+/* ============================================
+   MOBILE CTA BAR
+   ============================================ */
+.mobile-cta-bar {
+  background: linear-gradient(
+    to top,
+    oklch(var(--b1)) 0%,
+    oklch(var(--b1) / 0.95) 60%,
+    transparent 100%
+  );
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ============================================
+   NAVBAR GLASS EFFECT
+   ============================================ */
+.navbar-glass {
+  @apply bg-base-100/80 backdrop-blur-xl border-b border-base-300/50;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-base-200;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-base-300 rounded-full;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-base-content/30;
+  }
+}
