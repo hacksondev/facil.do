@@ -38,6 +38,12 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'company_user_status') THEN
     CREATE TYPE company_user_status AS ENUM ('pending','active','disabled');
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status') THEN
+    CREATE TYPE payment_status AS ENUM ('inbox','need_approval','scheduled','paid','failed');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'beneficiary_status') THEN
+    CREATE TYPE beneficiary_status AS ENUM ('active','pending','blocked');
+  END IF;
 END$$;
 
 -- ============================================
@@ -299,6 +305,41 @@ CREATE TABLE IF NOT EXISTS public.alerts (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Beneficiarios
+CREATE TABLE IF NOT EXISTS public.beneficiaries (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  email TEXT,
+  bank_name TEXT,
+  account_number TEXT,
+  account_type TEXT,
+  currency TEXT NOT NULL DEFAULT 'DOP',
+  status beneficiary_status NOT NULL DEFAULT 'active',
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT beneficiaries_unique UNIQUE (company_id, account_number, bank_name)
+);
+
+-- Pagos (órdenes de pago)
+CREATE TABLE IF NOT EXISTS public.payments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+  account_id UUID REFERENCES public.accounts(id),
+  amount NUMERIC(18,2) NOT NULL,
+  currency TEXT NOT NULL DEFAULT 'DOP',
+  counterparty TEXT,
+  description TEXT,
+  status payment_status NOT NULL DEFAULT 'inbox',
+  scheduled_at TIMESTAMPTZ,
+  processed_at TIMESTAMPTZ,
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT payments_amount_check CHECK (amount > 0)
+);
+
 -- Auditoría
 CREATE TABLE IF NOT EXISTS public.audit_log (
   id BIGSERIAL PRIMARY KEY,
@@ -330,6 +371,8 @@ CREATE INDEX IF NOT EXISTS idx_company_settings_company ON public.company_settin
 CREATE INDEX IF NOT EXISTS idx_company_profile_company ON public.company_profile(company_id);
 CREATE INDEX IF NOT EXISTS idx_user_settings_user ON public.user_settings(user_id);
 CREATE INDEX IF NOT EXISTS idx_company_users_company ON public.company_users(company_id);
+CREATE INDEX IF NOT EXISTS idx_payments_company_status ON public.payments(company_id, status);
+CREATE INDEX IF NOT EXISTS idx_beneficiaries_company ON public.beneficiaries(company_id);
 
 -- ============================================
 -- RLS
@@ -353,6 +396,8 @@ ALTER TABLE public.company_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.company_profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.company_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.beneficiaries ENABLE ROW LEVEL SECURITY;
 
 -- Waitlist: insert público, lectura autenticada
 DROP POLICY IF EXISTS "waitlist insert anon" ON public.waitlist;
@@ -495,6 +540,34 @@ CREATE POLICY "company_users insert" ON public.company_users FOR INSERT TO authe
 );
 DROP POLICY IF EXISTS "company_users update" ON public.company_users;
 CREATE POLICY "company_users update" ON public.company_users FOR UPDATE TO authenticated USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+
+-- Beneficiaries
+DROP POLICY IF EXISTS "beneficiaries select" ON public.beneficiaries;
+CREATE POLICY "beneficiaries select" ON public.beneficiaries FOR SELECT USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "beneficiaries insert" ON public.beneficiaries;
+CREATE POLICY "beneficiaries insert" ON public.beneficiaries FOR INSERT TO authenticated WITH CHECK (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "beneficiaries update" ON public.beneficiaries;
+CREATE POLICY "beneficiaries update" ON public.beneficiaries FOR UPDATE TO authenticated USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+
+-- Payments
+DROP POLICY IF EXISTS "payments select" ON public.payments;
+CREATE POLICY "payments select" ON public.payments FOR SELECT USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "payments insert" ON public.payments;
+CREATE POLICY "payments insert" ON public.payments FOR INSERT TO authenticated WITH CHECK (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "payments update" ON public.payments;
+CREATE POLICY "payments update" ON public.payments FOR UPDATE TO authenticated USING (
   company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
 );
 

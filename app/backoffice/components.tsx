@@ -197,9 +197,9 @@ function Sidebar({
           >
             <li><Link href={`/backoffice/ajustes${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Configuración</Link></li>
             <li><Link href={`/backoffice/usuario${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Usuario</Link></li>
-            <li><Link href={`/backoffice/documentos${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Documentos y datos</Link></li>
-            <li><Link href={`/backoffice/plan-facturacion${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Plan y facturación</Link></li>
-            <li><Link href={`/backoffice/referidos${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Referidos</Link></li>
+            {/* <li><Link href={`/backoffice/documentos${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Documentos y datos</Link></li> */}
+            {/* <li><Link href={`/backoffice/plan-facturacion${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Plan y facturación</Link></li> */}
+            {/* <li><Link href={`/backoffice/referidos${activeCompanyId ? `?companyId=${activeCompanyId}` : ''}`} className="justify-start">Referidos</Link></li> */}
             <li className="menu-title mt-2">Switch account</li>
             {companies.map((c) => (
               <li key={c.id}>
@@ -215,8 +215,8 @@ function Sidebar({
               </li>
             ))}
             <li><hr className="my-2" /></li>
-              <li><button type="button" className="justify-start">Aplicar a nueva cuenta</button></li>
-              <li><button type="button" className="justify-start">Vincular cuenta existente</button></li>
+              {/* <li><button type="button" className="justify-start">Aplicar a nueva cuenta</button></li> */}
+              {/* <li><button type="button" className="justify-start">Vincular cuenta existente</button></li> */}
               <li>
                 <button
                   className="text-error text-left"
