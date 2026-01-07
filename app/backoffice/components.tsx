@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Company } from './utils'
+import supabase from '../services/supabaseClient'
 
 type IconName =
   | 'home'
@@ -214,20 +215,20 @@ function Sidebar({
               </li>
             ))}
             <li><hr className="my-2" /></li>
-            <li><button type="button" className="justify-start">Aplicar a nueva cuenta</button></li>
-            <li><button type="button" className="justify-start">Vincular cuenta existente</button></li>
-            <li>
-              <button
-                className="text-error text-left"
-                onClick={async () => {
-                  await fetch('/api/mock/auth/logout', { method: 'POST' })
-                  router.push('/backoffice/login')
-                  router.refresh()
-                }}
-              >
-                Log out
-              </button>
-            </li>
+              <li><button type="button" className="justify-start">Aplicar a nueva cuenta</button></li>
+              <li><button type="button" className="justify-start">Vincular cuenta existente</button></li>
+              <li>
+                <button
+                  className="text-error text-left"
+                  onClick={async () => {
+                    await supabase.auth.signOut()
+                    router.push('/backoffice/login')
+                    router.refresh()
+                  }}
+                >
+                  Log out
+                </button>
+              </li>
           </ul>
         </div>
       </div>

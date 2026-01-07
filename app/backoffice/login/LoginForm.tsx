@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import supabase from '../../services/supabaseClient'
 
 export default function LoginForm() {
   const router = useRouter()
@@ -17,15 +18,13 @@ export default function LoginForm() {
     setError(null)
 
     try {
-      const res = await fetch('/api/mock/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       })
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        setError(body.error ?? 'No se pudo iniciar sesión')
+      if (signInError) {
+        setError(signInError.message ?? 'No se pudo iniciar sesión')
         setLoading(false)
         return
       }
@@ -80,7 +79,7 @@ export default function LoginForm() {
           <input type="checkbox" className="checkbox checkbox-sm" />
           <span>Recordar sesión</span>
         </label>
-        <span className="badge bg-base-200 border-base-300">Mock, sin SSO</span>
+        <span className="badge bg-base-200 border-base-300">Auth Supabase</span>
       </div>
 
       {error && <p className="text-sm text-error">{error}</p>}

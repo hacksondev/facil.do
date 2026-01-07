@@ -53,6 +53,11 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
     closeDrawer()
   }
 
+  const handleOpenAccount = () => {
+    router.push('/backoffice/onboarding/start')
+    closeDrawer()
+  }
+
   const handleNavClick = (link: NavLink) => {
     const isRoute = link.type === 'route' || link.href.startsWith('/')
 
@@ -131,8 +136,8 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
             >
               Iniciar sesión
             </button>
-            <button onClick={onCtaClick} className="btn btn-primary btn-md hidden lg:flex">
-              Separa tu cupo
+            <button onClick={handleOpenAccount} className="btn btn-primary btn-md hidden lg:flex">
+              Abrir una cuenta
             </button>
 
             {/* Mobile menu button */}
@@ -189,11 +194,11 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
               onClick={() => {
                 const checkbox = document.getElementById('mobile-drawer') as HTMLInputElement
                 if (checkbox) checkbox.checked = false
-                onCtaClick()
+                handleOpenAccount()
               }}
               className="btn btn-primary w-full"
             >
-              Separa tu cupo
+              Abrir una cuenta
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

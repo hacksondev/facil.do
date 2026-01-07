@@ -25,7 +25,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn(
-    '⚠️ Variables de entorno de Supabase no configuradas. ' +
+    'Variables de entorno de Supabase no configuradas. ' +
     'Asegúrate de crear el archivo .env.local con NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY'
   )
 }
@@ -36,7 +36,7 @@ export const supabase: SupabaseClient = createClient(
   supabaseAnonKey || '',
   {
     auth: {
-      persistSession: false,
+      persistSession: true,
     },
     global: {
       headers: {

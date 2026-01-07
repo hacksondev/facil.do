@@ -12,9 +12,7 @@ Base URL: `http://localhost:3000/api/mock`
 - `GET /transactions` — Lista de transacciones. Query params: `accountId`, `status`.
 - `GET /liveness-sessions` — Sesiones de prueba de vida. Query param: `personId`.
 - `GET /alerts` — Alertas. Query params: `status`, `severity`, `entityId`.
-- `POST /auth/login` — Mock login; setea cookie `mock_backoffice_session`. Credenciales demo en `app/api/mock/auth/users.ts`.
-- `POST /auth/logout` — Limpia la cookie.
-- `GET /auth/me` — Devuelve usuario mock si la cookie es válida.
+Endpoints de auth mock fueron reemplazados por Supabase Auth en el flujo de onboarding/login.
 
 ## Ejemplos
 Listar empresas en revisión:

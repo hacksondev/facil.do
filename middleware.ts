@@ -1,9 +1,25 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
-const PUBLIC_PATHS = ['/backoffice/login']
+const PUBLIC_PATHS = [
+  '/backoffice/login',
+  '/backoffice/onboarding/start',
+  '/backoffice/onboarding/create-account',
+  '/backoffice/onboarding/company-info',
+  '/backoffice/onboarding/company-address',
+  '/backoffice/onboarding/ownership',
+  '/backoffice/onboarding/documents',
+  '/backoffice/onboarding/expected-activity',
+  '/backoffice/onboarding/follow-up',
+  '/backoffice/onboarding/liveness',
+  '/backoffice/onboarding',
+  '/backoffice/onboarding/complete',
+  '/backoffice/onboarding/activate',
+  '/backoffice/onboarding/deposito',
+]
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Solo protegemos rutas de backoffice (no API ni assets)
@@ -20,7 +36,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const session = request.cookies.get('mock_backoffice_session')?.value
+  const response = NextResponse.next()
+  const supabase = createMiddlewareClient({ req: request, res: response })
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
 
   if (!session) {
     const loginUrl = request.nextUrl.clone()
@@ -29,7 +49,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  return NextResponse.next()
+  return response
 }
 
 export const config = {

@@ -29,9 +29,8 @@ Pantalla de backoffice inspirada en Mercury usando datos de la Mock API. Ruta: `
 - `/backoffice/login`: formulario de ingreso al backoffice (mock, sin autenticación real).
 
 ## Autenticación mock
-- Credenciales demo en `app/api/mock/auth/users.ts` (ej: ops@facil.do / demo123).
-- Endpoints: `POST /api/mock/auth/login` (setea cookie `mock_backoffice_session`), `POST /api/mock/auth/logout`, `GET /api/mock/auth/me`.
-- Middleware (`middleware.ts`) protege `/backoffice/*` y redirige a `/backoffice/login` si no hay cookie.
+- Se usa Supabase Auth (email/contraseña). El login y alta se hacen desde las pantallas de onboarding/login.
+- Middleware (`middleware.ts`) protege `/backoffice/*` y redirige a `/backoffice/login` si no hay sesión.
 
 ## Cómo adaptar a una API real
 - Mantén los contratos actuales de `/api/mock/*` o crea un adapter en el front para el nuevo backend.
