@@ -32,7 +32,7 @@ const milestones = [
 const team = [
   {
     name: 'Jackson Cuevas',
-    role: 'CEO & Co-founder',
+    role: 'CEO & Founder',
     focus: 'Producto y experiencia de usuario',
   },
   {

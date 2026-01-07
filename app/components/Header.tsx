@@ -48,6 +48,11 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
     if (checkbox) checkbox.checked = false
   }
 
+  const handleLoginClick = () => {
+    router.push('/backoffice/login')
+    closeDrawer()
+  }
+
   const handleNavClick = (link: NavLink) => {
     const isRoute = link.type === 'route' || link.href.startsWith('/')
 
@@ -120,6 +125,12 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
 
           {/* Desktop CTA + Mobile Menu Button */}
           <div className="navbar-end gap-2">
+            <button
+              onClick={handleLoginClick}
+              className="btn btn-ghost btn-md hidden lg:flex text-base-content/80 hover:text-base-content"
+            >
+              Iniciar sesión
+            </button>
             <button onClick={onCtaClick} className="btn btn-primary btn-md hidden lg:flex">
               Separa tu cupo
             </button>
@@ -168,6 +179,12 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
 
           {/* Drawer Footer */}
           <div className="pt-6 border-t border-base-200">
+            <button
+              onClick={handleLoginClick}
+              className="btn btn-ghost w-full mb-3 text-base-content/80 hover:text-base-content"
+            >
+              Iniciar sesión
+            </button>
             <button
               onClick={() => {
                 const checkbox = document.getElementById('mobile-drawer') as HTMLInputElement

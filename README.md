@@ -216,6 +216,22 @@ El proyecto es compatible con cualquier plataforma que soporte Next.js o Docker:
 - Google Cloud Run
 - DigitalOcean App Platform
 
+## Mock API de Backoffice
+
+Se incluyó una API mock para el backoffice (sin persistencia) servida desde Next.js:
+
+- Base: `/api/mock`
+- Endpoints principales: compañías, casos de onboarding, cuentas, transacciones, sesiones de liveness y alertas.
+- Documentación y ejemplos en `docs/mock-api.md`.
+
+## Backoffice UI (Mock)
+
+- Pantalla mock en `/backoffice` inspirada en Mercury, consumiendo la API mock.
+- Muestra saldos DOP/USD, cuentas, onboarding, alertas AML y movimientos recientes.
+- Rutas adicionales: `/backoffice/onboarding`, `/backoffice/accounts`, `/backoffice/alerts`, `/backoffice/login`.
+- Autenticación mock: credenciales en `app/api/mock/auth/users.ts` (ej: ops@facil.do / demo123); middleware protege `/backoffice/*`.
+- Cómo adaptarla a la API real: ver `docs/backoffice-ui.md`.
+
 ## Seguridad
 
 - Row Level Security (RLS) habilitado en Supabase
