@@ -312,7 +312,7 @@ export default function PricingContent() {
                         </div>
                         {plan.badge && (
                           <span
-                            className={`badge badge-outline w-56 ${plan.highlight ? 'border-primary text-primary' : ''}`}
+                            className={`badge badge-outline lg:w-56 ${plan.highlight ? 'border-primary text-primary' : ''}`}
                           >
                             {plan.badge}
                           </span>
