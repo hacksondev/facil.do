@@ -32,6 +32,12 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'alert_type_ext') THEN
     CREATE TYPE alert_type_ext AS ENUM ('aml','transaction','liveness','kyc');
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'company_role') THEN
+    CREATE TYPE company_role AS ENUM ('admin','aprobador','visor');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'company_user_status') THEN
+    CREATE TYPE company_user_status AS ENUM ('pending','active','disabled');
+  END IF;
 END$$;
 
 -- ============================================
@@ -170,6 +176,69 @@ CREATE TABLE IF NOT EXISTS public.expected_activity (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Settings de empresa
+CREATE TABLE IF NOT EXISTS public.company_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+  language TEXT NOT NULL DEFAULT 'es-DO',
+  timezone TEXT NOT NULL DEFAULT 'America/Santo_Domingo',
+  notifications_email BOOLEAN NOT NULL DEFAULT true,
+  notifications_webhooks JSONB,
+  security_2fa_required BOOLEAN NOT NULL DEFAULT false,
+  statement_day SMALLINT DEFAULT 1,
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT company_settings_unique UNIQUE (company_id)
+);
+
+-- Perfil de empresa (datos públicos/básicos)
+CREATE TABLE IF NOT EXISTS public.company_profile (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+  website TEXT,
+  logo_url TEXT,
+  description TEXT,
+  mission TEXT,
+  vision TEXT,
+  address TEXT,
+  social_links JSONB,
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT company_profile_unique UNIQUE (company_id)
+);
+
+-- Settings de usuario
+CREATE TABLE IF NOT EXISTS public.user_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  language TEXT NOT NULL DEFAULT 'es-DO',
+  timezone TEXT NOT NULL DEFAULT 'America/Santo_Domingo',
+  theme TEXT DEFAULT 'light',
+  notifications_email BOOLEAN NOT NULL DEFAULT true,
+  notifications_push BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT user_settings_unique UNIQUE (user_id)
+);
+
+-- Usuarios de empresa (roles)
+CREATE TABLE IF NOT EXISTS public.company_users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  role company_role NOT NULL DEFAULT 'visor',
+  status company_user_status NOT NULL DEFAULT 'pending',
+  invited_at TIMESTAMPTZ DEFAULT now(),
+  accepted_at TIMESTAMPTZ,
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT company_users_unique UNIQUE (company_id, email)
+);
+
 -- Cuentas
 CREATE TABLE IF NOT EXISTS public.accounts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -257,6 +326,10 @@ CREATE INDEX IF NOT EXISTS idx_deposits_company ON public.deposits(company_id);
 CREATE INDEX IF NOT EXISTS idx_accounts_company_status ON public.accounts(company_id, status);
 CREATE INDEX IF NOT EXISTS idx_documents_company_status ON public.documents(company_id, status);
 CREATE INDEX IF NOT EXISTS idx_onboarding_cases_company_status ON public.onboarding_cases(company_id, status);
+CREATE INDEX IF NOT EXISTS idx_company_settings_company ON public.company_settings(company_id);
+CREATE INDEX IF NOT EXISTS idx_company_profile_company ON public.company_profile(company_id);
+CREATE INDEX IF NOT EXISTS idx_user_settings_user ON public.user_settings(user_id);
+CREATE INDEX IF NOT EXISTS idx_company_users_company ON public.company_users(company_id);
 
 -- ============================================
 -- RLS
@@ -276,6 +349,10 @@ ALTER TABLE public.catalog_doc_types ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.company_addresses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.expected_activity ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.deposits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.company_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.company_profile ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.company_users ENABLE ROW LEVEL SECURITY;
 
 -- Waitlist: insert público, lectura autenticada
 DROP POLICY IF EXISTS "waitlist insert anon" ON public.waitlist;
@@ -370,6 +447,56 @@ DROP POLICY IF EXISTS "alerts select" ON public.alerts;
 CREATE POLICY "alerts select" ON public.alerts FOR SELECT USING (created_by = auth.uid());
 DROP POLICY IF EXISTS "alerts insert" ON public.alerts;
 CREATE POLICY "alerts insert" ON public.alerts FOR INSERT TO authenticated WITH CHECK (created_by = auth.uid());
+
+-- Company settings
+DROP POLICY IF EXISTS "company_settings select" ON public.company_settings;
+CREATE POLICY "company_settings select" ON public.company_settings FOR SELECT USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "company_settings insert" ON public.company_settings;
+CREATE POLICY "company_settings insert" ON public.company_settings FOR INSERT TO authenticated WITH CHECK (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "company_settings update" ON public.company_settings;
+CREATE POLICY "company_settings update" ON public.company_settings FOR UPDATE TO authenticated USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+
+-- Company profile
+DROP POLICY IF EXISTS "company_profile select" ON public.company_profile;
+CREATE POLICY "company_profile select" ON public.company_profile FOR SELECT USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "company_profile insert" ON public.company_profile;
+CREATE POLICY "company_profile insert" ON public.company_profile FOR INSERT TO authenticated WITH CHECK (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "company_profile update" ON public.company_profile;
+CREATE POLICY "company_profile update" ON public.company_profile FOR UPDATE TO authenticated USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+
+-- User settings
+DROP POLICY IF EXISTS "user_settings select" ON public.user_settings;
+CREATE POLICY "user_settings select" ON public.user_settings FOR SELECT USING (user_id = auth.uid());
+DROP POLICY IF EXISTS "user_settings insert" ON public.user_settings;
+CREATE POLICY "user_settings insert" ON public.user_settings FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+DROP POLICY IF EXISTS "user_settings update" ON public.user_settings;
+CREATE POLICY "user_settings update" ON public.user_settings FOR UPDATE TO authenticated USING (user_id = auth.uid());
+
+-- Company users
+DROP POLICY IF EXISTS "company_users select" ON public.company_users;
+CREATE POLICY "company_users select" ON public.company_users FOR SELECT USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "company_users insert" ON public.company_users;
+CREATE POLICY "company_users insert" ON public.company_users FOR INSERT TO authenticated WITH CHECK (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "company_users update" ON public.company_users;
+CREATE POLICY "company_users update" ON public.company_users FOR UPDATE TO authenticated USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
 
 -- Audit log (solo lectura por defecto)
 DROP POLICY IF EXISTS "audit select" ON public.audit_log;
