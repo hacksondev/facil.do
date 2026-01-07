@@ -48,7 +48,7 @@ function buildNavItems(companyQuery: string): NavItem[] {
       icon: 'payments',
       children: [
         { label: 'Beneficiarios', href: withQuery('/backoffice/payments/beneficiarios'), icon: 'user' },
-        { label: 'Impuestos', href: withQuery('/backoffice/payments/impuestos'), icon: 'tax' },
+        // { label: 'Impuestos', href: withQuery('/backoffice/payments/impuestos'), icon: 'tax' },
         { label: 'Autorizaciones ACH', href: withQuery('/backoffice/payments/ach'), icon: 'ach' },
       ],
     },

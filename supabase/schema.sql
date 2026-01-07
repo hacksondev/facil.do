@@ -44,6 +44,9 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'beneficiary_status') THEN
     CREATE TYPE beneficiary_status AS ENUM ('active','pending','blocked');
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'ach_request_status') THEN
+    CREATE TYPE ach_request_status AS ENUM ('pending','approved','rejected');
+  END IF;
 END$$;
 
 -- ============================================
@@ -325,6 +328,20 @@ CREATE TABLE IF NOT EXISTS public.beneficiaries (
   CONSTRAINT beneficiaries_unique UNIQUE (company_id, account_number, bank_name)
 );
 
+-- Autorizaciones/mandatos ACH
+CREATE TABLE IF NOT EXISTS public.ach_authorizations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+  beneficiary_id UUID REFERENCES public.beneficiaries(id),
+  amount NUMERIC(18,2),
+  currency TEXT NOT NULL DEFAULT 'DOP',
+  description TEXT,
+  status ach_request_status NOT NULL DEFAULT 'pending',
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- Pagos (órdenes de pago)
 CREATE TABLE IF NOT EXISTS public.payments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -376,6 +393,7 @@ CREATE INDEX IF NOT EXISTS idx_user_settings_user ON public.user_settings(user_i
 CREATE INDEX IF NOT EXISTS idx_company_users_company ON public.company_users(company_id);
 CREATE INDEX IF NOT EXISTS idx_payments_company_status ON public.payments(company_id, status);
 CREATE INDEX IF NOT EXISTS idx_beneficiaries_company ON public.beneficiaries(company_id);
+CREATE INDEX IF NOT EXISTS idx_ach_company_status ON public.ach_authorizations(company_id, status);
 
 -- ============================================
 -- RLS
@@ -401,6 +419,7 @@ ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.company_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.beneficiaries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ach_authorizations ENABLE ROW LEVEL SECURITY;
 
 -- Waitlist: insert público, lectura autenticada
 DROP POLICY IF EXISTS "waitlist insert anon" ON public.waitlist;
@@ -557,6 +576,20 @@ CREATE POLICY "beneficiaries insert" ON public.beneficiaries FOR INSERT TO authe
 );
 DROP POLICY IF EXISTS "beneficiaries update" ON public.beneficiaries;
 CREATE POLICY "beneficiaries update" ON public.beneficiaries FOR UPDATE TO authenticated USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+
+-- ACH authorizations
+DROP POLICY IF EXISTS "ach select" ON public.ach_authorizations;
+CREATE POLICY "ach select" ON public.ach_authorizations FOR SELECT USING (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "ach insert" ON public.ach_authorizations;
+CREATE POLICY "ach insert" ON public.ach_authorizations FOR INSERT TO authenticated WITH CHECK (
+  company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
+);
+DROP POLICY IF EXISTS "ach update" ON public.ach_authorizations;
+CREATE POLICY "ach update" ON public.ach_authorizations FOR UPDATE TO authenticated USING (
   company_id IN (SELECT id FROM public.companies WHERE created_by = auth.uid())
 );
 
