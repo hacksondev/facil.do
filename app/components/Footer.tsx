@@ -124,7 +124,7 @@ export default function Footer() {
           <div className="flex flex-col items-center gap-4 text-sm md:flex-row md:justify-between w-full">
             <div className="opacity-50 text-center md:text-left">
               <p>© {currentYear} Facil.do. Todos los derechos reservados.</p>
-              <p className="text-xs mt-1">Facil.do no es un banco. Servicios financieros provistos por instituciones bancarias aliadas.</p>
+              <p className="text-xs mt-1">Facil.do es una empresa de tecnología financiera que facilita el acceso a servicios financieros a través de alianzas con entidades bancarias locales. No es un banco ni una institución asegurada por la SB</p>
             </div>
             <div className="flex items-center gap-6">
               <a href="/terminos" className="link link-hover opacity-50 hover:opacity-100">

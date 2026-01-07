@@ -51,8 +51,8 @@ export default function TerminosPage() {
               <div>
                 <h3 className="font-bold">Aviso Importante</h3>
                 <p className="text-sm">
-                  Facil.do es una empresa de tecnología financiera y no es un banco ni una institución asegurada por la FDIC.
-                  Los servicios financieros son proporcionados por instituciones bancarias asociadas, debidamente autorizadas y miembros de la FDIC, según corresponda.
+                  Facil.do es una empresa de tecnología financiera y no es un banco ni una institución asegurada por la Superintendencia de Bancos de la República Dominicana.
+                  Los servicios financieros son proporcionados por instituciones bancarias asociadas, debidamente autorizadas y miembros de la Superintendencia de Bancos de la República Dominicana, según corresponda.
                   El seguro de depósitos aplica únicamente en caso de quiebra de la institución financiera que mantiene los fondos.
                   Facil.do actúa como una plataforma tecnológica que facilita el acceso a servicios financieros a través de alianzas con entidades bancarias locales.
                 </p>
