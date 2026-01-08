@@ -1,25 +1,83 @@
-import {
-  Account,
-  Alert,
-  Company,
-  LivenessSession,
-  OnboardingCase,
-  Person,
-  Transaction,
-} from '../api/mock/data'
+export type Company = {
+  id: string
+  name: string
+  rnc: string
+  country: string
+  sector: string
+  riskLevel: 'low' | 'medium' | 'high'
+  onboardingStage: 'collecting' | 'pending_review' | 'approved' | 'rejected'
+  ownerPersonId: string
+  createdAt: string
+  industry?: string
+  phone?: string
+  accountsMenu?: { id: string; number?: string; alias?: string; type: 'checking' | 'savings' }[]
+}
 
-export type { Account, Alert, Company, LivenessSession, OnboardingCase, Person, Transaction }
+export type Account = {
+  id: string
+  companyId: string
+  type: 'checking' | 'savings'
+  currency: 'DOP' | 'USD'
+  number: string
+  alias: string
+  balance: number
+  status: 'active' | 'blocked' | 'pending_activation'
+  limits?: { daily: number; monthly: number }
+  createdAt?: string
+}
 
-export const apiBase =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+export type Transaction = {
+  id: string
+  accountId: string
+  type: 'credit' | 'debit'
+  amount: number
+  currency: 'DOP' | 'USD'
+  counterparty: string
+  description: string
+  status: 'pending' | 'settled' | 'reversed'
+  createdAt: string
+}
 
-export async function fetchMock<T>(path: string): Promise<T> {
-  const res = await fetch(`${apiBase}${path}`, { cache: 'no-store' })
-  if (!res.ok) {
-    throw new Error(`Error al cargar ${path}: ${res.status}`)
-  }
-  return res.json() as Promise<T>
+export type Alert = {
+  id: string
+  type: 'aml' | 'transaction' | 'liveness' | 'kyc'
+  severity: 'low' | 'medium' | 'high'
+  status: 'open' | 'resolved' | 'in_progress' | 'dismissed'
+  entityType: string
+  entityId: string
+  message: string
+  createdAt: string
+}
+
+export type OnboardingCase = {
+  id: string
+  companyId: string
+  status: 'collecting' | 'pending_review' | 'approved' | 'rejected'
+  reviewer?: string
+  decisionReason?: string
+  riskScore?: number
+  updatedAt?: string
+  createdAt?: string
+}
+
+export type Person = {
+  id: string
+  fullName: string
+  documentNumber: string
+  documentType: 'cedula' | 'passport'
+  nationality: string
+  pep: boolean
+  createdAt: string
+}
+
+export type LivenessSession = {
+  id: string
+  personId: string
+  provider: string
+  sessionRef?: string
+  score: number
+  passed?: boolean
+  createdAt: string
 }
 
 export function formatCurrency(amount: number, currency: 'DOP' | 'USD') {

@@ -1,21 +1,62 @@
+import { cookies } from 'next/headers'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { BackofficeShell, CardPanel } from '../components'
-import { Company, fetchMock } from '../utils'
+import { Company } from '../utils'
 
-type CompaniesResponse = { data: Company[] }
+export default async function CapitalPage({ searchParams }: { searchParams?: { companyId?: string } }) {
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-async function getData() {
-  const companiesRes = await fetchMock<CompaniesResponse>('/api/mock/companies')
-  return { companies: companiesRes.data }
-}
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-base-200 text-base-content flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-base-content/60">Backoffice</p>
+          <h1 className="text-2xl font-bold">Sesión requerida</h1>
+          <p className="text-base-content/70">Inicia sesión para ver capital.</p>
+        </div>
+      </div>
+    )
+  }
 
-export default async function CapitalPage({
-  searchParams,
-}: {
-  searchParams?: { companyId?: string }
-}) {
-  const { companies } = await getData()
+  const { data: companiesRaw } = await supabase
+    .from('companies')
+    .select('id,name,rnc,industry,created_at')
+    .eq('created_by', user.id)
+    .order('created_at', { ascending: true })
+
+  const companies: Company[] =
+    companiesRaw?.map((c) => ({
+      id: c.id,
+      name: c.name,
+      rnc: c.rnc,
+      country: 'República Dominicana',
+      sector: c.industry || 'N/D',
+      riskLevel: 'medium',
+      onboardingStage: 'pending_review',
+      ownerPersonId: '',
+      industry: c.industry || '',
+      phone: '',
+      createdAt: c.created_at || '',
+    })) ?? []
+
   const activeCompany =
     companies.find((c) => (searchParams?.companyId ? c.id === searchParams.companyId : c)) ?? companies[0]
+
+  if (!activeCompany) {
+    return (
+      <div className="min-h-screen bg-base-200 text-base-content flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-base-content/60">Backoffice</p>
+          <h1 className="text-2xl font-bold">Sin empresas</h1>
+          <p className="text-base-content/70">Completa el onboarding para gestionar capital.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <BackofficeShell
@@ -23,13 +64,13 @@ export default async function CapitalPage({
       activeCompany={activeCompany}
       activePath="/backoffice/capital"
       title="Capital"
-      subtitle="Líneas y préstamos"
-      actionLabel="Solicitar capital"
+      subtitle="Líneas de crédito"
+      actionLabel="Solicitar línea"
     >
-      <CardPanel title="Capital" subtitle="Mock">
-        <div className="rounded-xl border border-base-300 bg-base-100 p-4 text-sm text-base-content/70">
-          Aquí irán las líneas de crédito, límites y solicitudes. Sin datos mock aún.
-        </div>
+      <CardPanel title="Capital" subtitle="Próximamente">
+        <p className="text-sm text-base-content/70">
+          Conecta tu línea de crédito y estados financieros para ver disponibilidad. Aún no hay datos.
+        </p>
       </CardPanel>
     </BackofficeShell>
   )

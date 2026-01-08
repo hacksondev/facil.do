@@ -1,23 +1,62 @@
+import { cookies } from 'next/headers'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { BackofficeShell, CardPanel } from '../components'
-import { Company, fetchMock } from '../utils'
+import { Company } from '../utils'
 
-type CompaniesResponse = {
-  data: Company[]
-}
+export default async function TasksPage({ searchParams }: { searchParams?: { companyId?: string } }) {
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-async function getData() {
-  const companiesRes = await fetchMock<CompaniesResponse>('/api/mock/companies')
-  return { companies: companiesRes.data }
-}
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-base-200 text-base-content flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-base-content/60">Backoffice</p>
+          <h1 className="text-2xl font-bold">Sesión requerida</h1>
+          <p className="text-base-content/70">Inicia sesión para ver tareas.</p>
+        </div>
+      </div>
+    )
+  }
 
-export default async function TasksPage({
-  searchParams,
-}: {
-  searchParams?: { companyId?: string }
-}) {
-  const { companies } = await getData()
+  const { data: companiesRaw } = await supabase
+    .from('companies')
+    .select('id,name,rnc,industry,created_at')
+    .eq('created_by', user.id)
+    .order('created_at', { ascending: true })
+
+  const companies: Company[] =
+    companiesRaw?.map((c) => ({
+      id: c.id,
+      name: c.name,
+      rnc: c.rnc,
+      country: 'República Dominicana',
+      sector: c.industry || 'N/D',
+      riskLevel: 'medium',
+      onboardingStage: 'pending_review',
+      ownerPersonId: '',
+      industry: c.industry || '',
+      phone: '',
+      createdAt: c.created_at || '',
+    })) ?? []
+
   const activeCompany =
     companies.find((c) => (searchParams?.companyId ? c.id === searchParams.companyId : c)) ?? companies[0]
+
+  if (!activeCompany) {
+    return (
+      <div className="min-h-screen bg-base-200 text-base-content flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-base-content/60">Backoffice</p>
+          <h1 className="text-2xl font-bold">Sin empresas</h1>
+          <p className="text-base-content/70">Completa el onboarding para gestionar tareas.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <BackofficeShell
@@ -25,25 +64,11 @@ export default async function TasksPage({
       activeCompany={activeCompany}
       activePath="/backoffice/tasks"
       title="Tareas"
-      subtitle="Backoffice"
+      subtitle="Workflow"
       actionLabel="Crear tarea"
     >
-      <CardPanel title="Tareas pendientes">
-        <div className="grid gap-3 md:grid-cols-2">
-          {['Revisar PEP', 'Verificar factura', 'Aprobar liveness', 'Revisar alerta ACH'].map((task, idx) => (
-            <div key={task} className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="font-semibold">{task}</p>
-                <span className="badge bg-base-200 border-base-300 text-xs">Prioridad {idx + 1}</span>
-              </div>
-              <p className="text-sm text-base-content/70">Asignado a equipo Ops. SLA: 4h.</p>
-              <div className="flex gap-2">
-                <button className="btn btn-sm bg-base-100 border-base-300">Detalle</button>
-                <button className="btn btn-sm btn-primary text-primary-content">Marcar listo</button>
-              </div>
-            </div>
-          ))}
-        </div>
+      <CardPanel title="Tareas" subtitle="Sin datos">
+        <p className="text-sm text-base-content/70">Aún no hay tareas. Conecta tu backend para listarlas.</p>
       </CardPanel>
     </BackofficeShell>
   )

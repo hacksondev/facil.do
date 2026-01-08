@@ -36,7 +36,7 @@ type NavItem = {
   children?: NavItem[]
 }
 
-function buildNavItems(companyQuery: string): NavItem[] {
+function buildNavItems(companyQuery: string, accountChildren: NavItem[] = []): NavItem[] {
   const withQuery = (href: string) => (href === '#' ? href : `${href}${companyQuery}`)
   return [
     { label: 'Inicio', href: withQuery('/backoffice'), icon: 'home' },
@@ -48,7 +48,6 @@ function buildNavItems(companyQuery: string): NavItem[] {
       icon: 'payments',
       children: [
         { label: 'Beneficiarios', href: withQuery('/backoffice/payments/beneficiarios'), icon: 'user' },
-        // { label: 'Impuestos', href: withQuery('/backoffice/payments/impuestos'), icon: 'tax' },
         { label: 'Autorizaciones ACH', href: withQuery('/backoffice/payments/ach'), icon: 'ach' },
       ],
     },
@@ -58,10 +57,7 @@ function buildNavItems(companyQuery: string): NavItem[] {
       label: 'Cuentas',
       href: withQuery('/backoffice/accounts'),
       icon: 'accounts',
-      children: [
-        { label: 'Corriente', href: withQuery('/backoffice/accounts'), icon: 'checking' },
-        { label: 'Ahorros', href: withQuery('/backoffice/accounts'), icon: 'savings' },
-      ],
+      children: accountChildren,
     },
     {
       label: 'Workflows',
@@ -107,7 +103,14 @@ export function BackofficeShell({
 }: ShellProps & { onActionClick?: () => void }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const companyQuery = activeCompany?.id ? `?companyId=${activeCompany.id}` : ''
-  const navItems = buildNavItems(companyQuery)
+  const accountChildren =
+    activeCompany?.accountsMenu?.map((acc) => ({
+      label: `${acc.alias || acc.type === 'checking' ? 'Corriente' : 'Ahorro'} ·· ${acc.number?.slice(-4) ?? ''}`,
+      href: `${'/backoffice/accounts/' + acc.id}${companyQuery}`,
+      icon: acc.type === 'checking' ? 'checking' : 'savings',
+    })) ?? []
+
+  const navItems = buildNavItems(companyQuery, accountChildren)
   return (
     <div className="h-screen overflow-hidden bg-base-200 text-base-content">
       <div className="flex h-screen">
@@ -122,7 +125,7 @@ export function BackofficeShell({
             <TopBar
               title={title}
               subtitle={subtitle ?? activeCompany?.name}
-              searchPlaceholder="Busca onboarding, cuentas, personas..."
+              searchPlaceholder="Busca cuentas, personas..."
               actionLabel={actionLabel}
               onActionClick={onActionClick}
               onMenuClick={() => setMobileOpen(true)}
