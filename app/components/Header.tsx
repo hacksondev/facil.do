@@ -1,12 +1,4 @@
 'use client'
-
-/**
- * Componente Header - Flat Design
- *
- * Navbar con drawer para móvil, efecto glass en scroll y soporte
- * para enlaces internos o rutas.
- */
-
 import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 
@@ -46,12 +38,12 @@ export default function Header({ navLinks }: HeaderProps) {
   }
 
   const handleContactClick = () => {
-    router.push('/about')
+    router.push('/#')
     closeDrawer()
   }
 
   const handlePricingClick = () => {
-    router.push('/pricing')
+    router.push('/#')
     closeDrawer()
   }
 
@@ -109,7 +101,6 @@ export default function Header({ navLinks }: HeaderProps) {
             </a>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1 gap-1">
               {linksToRender.map((link) => (
@@ -125,19 +116,17 @@ export default function Header({ navLinks }: HeaderProps) {
             </ul>
           </div>
 
-          {/* Desktop CTA + Mobile Menu Button */}
           <div className="navbar-end gap-2">
             <button
               onClick={handleContactClick}
               className="btn btn-ghost btn-md hidden lg:flex text-base-content/80 hover:text-base-content"
             >
-              Contacto
+              Iniciar sesión
             </button>
             <button onClick={handlePricingClick} className="btn btn-primary btn-md hidden lg:flex border-2">
-              Ver planes
+             Abrir una cuenta
             </button>
 
-            {/* Mobile menu button */}
             <label htmlFor="mobile-drawer" className="btn btn-ghost btn-circle lg:hidden">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -181,25 +170,6 @@ export default function Header({ navLinks }: HeaderProps) {
 
           {/* Drawer Footer */}
           <div className="pt-6 border-t border-base-200">
-            <button
-              onClick={handleContactClick}
-              className="btn btn-ghost w-full mb-3 text-base-content/80 hover:text-base-content"
-            >
-              Contacto
-            </button>
-            <button
-              onClick={() => {
-                const checkbox = document.getElementById('mobile-drawer') as HTMLInputElement
-                if (checkbox) checkbox.checked = false
-                handlePricingClick()
-              }}
-              className="btn btn-primary w-full border-2"
-            >
-              Ver planes
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </button>
             <p className="text-center text-sm text-base-content/60 font-medium mt-4">
               500+ negocios confían en Facil.do
             </p>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getFeatureById, getAllFeatureIds } from '@/app/data/features'
+import { logFirebaseEvent } from '@/app/services/firebaseClient'
 
 const baseUrl = 'https://facil.do'
 
@@ -235,15 +236,12 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
             ¿Listo para simplificar tu negocio?
           </h2>
           <p className="text-primary-content/80 mb-8 max-w-2xl mx-auto">
-            Más de 500 negocios ya separaron su cupo.
-            Sé de los primeros en acceder a Facil.do
+            Más de 500 negocios ya usan nuestra plataforma.
+            Unete a Facil.do y lleva tu negocio al siguiente nivel.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/#waitlist" className="btn btn-secondary btn-lg">
-              Separa tu cupo
-            </Link>
-            <Link href="/#features" className="btn btn-ghost btn-lg text-primary-content">
-              Ver más características
+            <Link href="mailto:hola@facil.do" className="btn bg-white text-primary border-2 border-white hover:bg-white/90 font-bold">
+              Contáctanos
             </Link>
           </div>
         </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  title: 'Facil.do - La cuenta empresarial digital para MIPYMES dominicanas',
+  title: 'Facil.do - La banca empresarial digital para MIPYMES dominicanas',
   description:
     'Controla tus ingresos, gastos y tu negocio desde un solo lugar. Apertura 100% digital, reportes claros y preparación fiscal.',
   keywords: [
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     locale: 'es_DO',
     url: 'https://facil.do',
     siteName: 'Facil.do',
-    title: 'Facil.do - La cuenta empresarial digital para MIPYMES dominicanas',
+    title: 'Facil.do - La banca empresarial digital para MIPYMES dominicanas',
     description:
       'Controla tus ingresos, gastos y tu negocio desde un solo lugar. Apertura 100% digital.',
     images: [
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Facil.do - Banca digital para MIPYMES',
+        alt: 'Facil.do - Banca empresarial digital para MIPYMES',
       },
     ],
   },

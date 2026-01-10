@@ -1,22 +1,14 @@
-/**
- * Componente Footer - Flat Design
- *
- * Pie de página minimalista con diseño flat.
- */
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
     <footer className="footer footer-center bg-neutral text-neutral-content border-t-4 border-primary">
-      {/* Main footer */}
       <div className="section py-16 md:py-20 w-full">
         <div className="container-custom">
           <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4 text-left w-full">
-            {/* Brand - Flat Design */}
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                {/* Logo flat */}
                 <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center border-2 border-primary">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -27,11 +19,9 @@ export default function Footer() {
                 </span>
               </div>
               <p className="text-neutral-content/70 max-w-sm mb-6 leading-relaxed font-medium">
-                La cuenta empresarial digital diseñada para MIPYMES dominicanas.
+                La banca empresarial digital diseñada para MIPYMES dominicanas.
                 Simplificando tus finanzas, impulsando tu negocio.
               </p>
-
-              {/* Social links */}
               <div className="flex gap-2">
                 <a
                   href="#"
@@ -77,11 +67,6 @@ export default function Footer() {
                 <li>
                   <a href="/about" className="link link-hover font-medium">
                     Nosotros
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="link link-hover font-medium">
-                    Precios
                   </a>
                 </li>
                 <li>

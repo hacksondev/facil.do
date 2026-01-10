@@ -36,10 +36,10 @@ export const features: FeatureDetail[] = [
   {
     id: 'apertura',
     title: 'Apertura 100% digital',
-    shortDescription: 'Abre tu cuenta empresarial en minutos desde tu celular o computadora. Sin papeleos, sin filas, sin citas.',
+    shortDescription: 'Abre tu cuenta empresarial en pesos o en dolar en minutos desde tu celular o computadora. Sin muchos papeleos, sin filas, sin citas.',
     badge: 'Sin filas',
     icon: 'M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3',
-    heroTitle: 'Abre tu cuenta desde donde estés',
+    heroTitle: 'Abre tu cuenta empresarial en pesos o en dolar desde donde estés',
     heroDescription: 'Desde tu celular mientras atiendes el negocio, o desde tu computadora en casa. Todo el proceso es 100% online, sin necesidad de visitar ninguna sucursal ni hacer citas previas.',
     benefits: [
       {
@@ -86,7 +86,7 @@ export const features: FeatureDetail[] = [
       },
     ],
     stats: [
-      { value: '10 minutos', label: 'Tiempo de apertura' },
+      { value: '48 horas', label: 'Tiempo de apertura' },
       { value: '100%', label: 'Online' },
       { value: '24/7', label: 'Disponible siempre' },
     ],
@@ -188,8 +188,8 @@ export const features: FeatureDetail[] = [
     benefits: [
       {
         title: 'Gráficos que hablan solos',
-        description: 'Barras, líneas y tortas que te muestran de un vistazo cómo va tu negocio. Sin tablas confusas ni jerga contable.',
-        icon: 'M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75z',
+        description: 'Barras, líneas y pastel que te muestran de un vistazo cómo va tu negocio. Sin tablas confusas ni jerga contable.',
+        icon: 'M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z',
       },
       {
         title: 'Arma tu propio reporte',

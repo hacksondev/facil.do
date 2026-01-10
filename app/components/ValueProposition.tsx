@@ -12,9 +12,9 @@ export default function ValueProposition() {
       <div className="container-custom">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="badge badge-primary border-2 mb-4 font-semibold">Por qué elegirnos</div>
-          <h2 className="text-3xl md:text-4xl font-bold text-base-content mb-4">
-            Tu negocio merece una plataforma que lo entienda
+          <div className="mb-4 font-bold text-5xl">Por qué elegirnos</div>
+          <h2 className="text-3xl md:text-3xl font-semibold text-base-content mb-4">
+            Tu negocio merece una plataforma que realmente lo entienda.
           </h2>
           <p className="text-lg text-base-content/70 max-w-2xl mx-auto">
             Sabemos los retos que enfrentan las MIPYMES dominicanas cada día.
@@ -78,10 +78,20 @@ export default function ValueProposition() {
               <ul className="space-y-3">
                 {[
                   'Todo desde tu celular o Web, sin salir de tu negocio',
+                  'Inteligencia artificial para optimizar tus finanzas',
                   'Tarifas claras y 100% transparentes',
                   'Reportes diseñados para MIPYMES',
-                  'Apertura 100% digital en minutos',
+                  'Apertura de cuentas bancarias empresariales 100% digital',
                   'Dashboard con vista clara de tu dinero',
+                  'Atención al cliente dedicada a MIPYMES',
+                  'Integraciones con las herramientas que ya usas',
+                  'Seguridad de nivel bancario',
+                  'Actualizaciones y mejoras constantes',
+                  'Cumplimiento con regulaciones locales',
+                  'Soporte en español y adaptado al mercado dominicano',
+                  'Educación financiera para dueños de MIPYMES',
+                  'Funcionalidades diseñadas para crecer contigo',
+                  'Acceso anticipado a nuevas herramientas y servicios',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center mt-0.5 flex-shrink-0">
