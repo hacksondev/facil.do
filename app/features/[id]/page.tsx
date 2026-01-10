@@ -113,20 +113,21 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
 
   return (
     <div className="min-h-screen bg-base-100">
-      <header className="navbar bg-base-100 border-b border-base-200 sticky top-0 z-50">
+      {/* Header - Flat Design */}
+      <header className="navbar bg-base-100 border-b-2 border-base-200 sticky top-0 z-50">
         <div className="container-custom">
           <div className="flex-1">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
-                <svg className="w-5 h-5 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center border-2 border-primary">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="text-lg font-semibold text-base-content">Facil.do</span>
+              <span className="text-lg font-bold text-base-content">Facil.do</span>
             </Link>
           </div>
           <div className="flex-none">
-            <Link href="/#features" className="btn btn-ghost btn-sm gap-2">
+            <Link href="/#features" className="btn btn-ghost btn-sm gap-2 border-2 border-transparent hover:border-base-300">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
@@ -136,36 +137,37 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
         </div>
       </header>
 
-      <section className="section relative overflow-hidden bg-gradient-to-b from-base-200/50 to-base-100">
-        <div className="absolute inset-0 dot-pattern opacity-20" />
-        <div className="absolute top-10 right-[10%] w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+      {/* Hero Section - Flat Design */}
+      <section className="section relative overflow-hidden bg-base-200">
+        <div className="absolute inset-0 dot-pattern-flat opacity-30" />
 
-        <div className="container-custom relative">
+        <div className="container-custom relative z-10">
           <div className="max-w-3xl">
-            <div className="badge badge-primary badge-outline mb-4">{feature.badge}</div>
-            <h1 className="text-4xl md:text-5xl font-bold text-base-content mb-6">
+            <div className="badge badge-primary border-2 font-semibold mb-4">{feature.badge}</div>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-base-content mb-6 leading-tight">
               {feature.heroTitle}
             </h1>
-            <p className="text-xl text-base-content/70 mb-8">
+            <p className="text-xl text-base-content/70 mb-8 font-medium">
               {feature.heroDescription}
             </p>
-            <Link href="/#waitlist" className="btn btn-primary btn-lg">
-              Separa tu cupo
+            <a href="mailto:hola@facil.do" className="btn btn-primary btn-lg border-2">
+              Contáctanos
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
 
-      <section className="py-8 bg-base-100 border-y border-base-200">
+      {/* Stats Section - Flat Design */}
+      <section className="py-8 bg-base-100 border-y-2 border-base-200">
         <div className="container-custom">
-          <div className="stats stats-vertical md:stats-horizontal shadow-lg w-full">
+          <div className="stats stats-vertical md:stats-horizontal border-2 border-base-300 no-shadow w-full">
             {feature.stats.map((stat, index) => (
               <div key={index} className="stat">
-                <div className="stat-value text-primary">{stat.value}</div>
-                <div className="stat-desc">{stat.label}</div>
+                <div className="stat-value text-primary font-extrabold">{stat.value}</div>
+                <div className="stat-desc font-semibold">{stat.label}</div>
               </div>
             ))}
           </div>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================
-   FINTECH B2B LANDING - DAISYUI
+   FINTECH B2B LANDING - FLAT DESIGN
    ============================================ */
 
 /* Importar fuente Inter */
@@ -66,28 +66,60 @@
     @apply max-w-6xl mx-auto;
   }
 
-  /* Gradientes de fondo */
-  .gradient-mesh {
+  /* ===== FLAT DESIGN PATTERNS (sin gradientes) ===== */
 
-  }
-
-  .gradient-hero {
-  
-  }
-
-  /* Patrón de puntos */
-  .dot-pattern {
-    background-size: 24px 24px;
-  }
-
-  /* Patrón de grid */
-  .grid-pattern {
+  /* Grid pattern flat */
+  .grid-pattern-flat {
+    background-image:
+      linear-gradient(oklch(var(--bc) / 0.05) 2px, transparent 2px),
+      linear-gradient(90deg, oklch(var(--bc) / 0.05) 2px, transparent 2px);
     background-size: 40px 40px;
   }
 
-  /* Text gradient */
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  /* Dot pattern flat */
+  .dot-pattern-flat {
+    background-image: radial-gradient(
+      circle,
+      oklch(var(--bc) / 0.08) 1.5px,
+      transparent 1.5px
+    );
+    background-size: 24px 24px;
+  }
+
+  /* Stripes pattern */
+  .stripes-pattern {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      oklch(var(--bc) / 0.03) 10px,
+      oklch(var(--bc) / 0.03) 20px
+    );
+  }
+
+  /* ===== FLAT DESIGN UTILITIES ===== */
+
+  /* Bordes flat */
+  .border-flat {
+    border: 2px solid currentColor;
+  }
+
+  .border-flat-thick {
+    border: 3px solid currentColor;
+  }
+
+  /* Sin sombras - totalmente flat */
+  .no-shadow {
+    box-shadow: none !important;
+  }
+
+  /* Sombras flat - muy sutiles */
+  .shadow-flat {
+    box-shadow: 0 2px 0 0 oklch(var(--bc) / 0.1);
+  }
+
+  .shadow-flat-lg {
+    box-shadow: 0 4px 0 0 oklch(var(--bc) / 0.15);
   }
 
   /* Animaciones con delay */
@@ -103,28 +135,67 @@
 }
 
 /* ============================================
-   DAISY UI CUSTOMIZATIONS
+   DAISY UI CUSTOMIZATIONS - FLAT DESIGN
    ============================================ */
 
-/* Botón primario mejorado */
+/* Botones flat - sin sombras */
+.btn {
+  box-shadow: none !important;
+  border-width: 2px;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.2s ease-out;
+}
+
 .btn-primary {
-  @apply hover:shadow-xl hover:shadow-primary/30;
+  @apply bg-primary border-primary text-white;
 }
 
+.btn-primary:hover {
+  @apply bg-primary/90 border-primary/90;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  @apply bg-transparent border-current;
+  border-width: 2px;
+}
+
+.btn-outline:hover {
+  @apply bg-primary text-white border-primary;
+}
+
+.btn-ghost {
+  @apply bg-transparent border-0;
+}
+
+.btn-ghost:hover {
+  @apply bg-base-content/5;
+}
+
+/* Cards flat - con bordes, sin sombras */
 .card {
-  @apply shadow-base-content/5;
+  box-shadow: none !important;
+  @apply border-2 border-base-300;
 }
 
-/* Input focus mejorado */
+/* Input focus flat */
 .input:focus,
 .select:focus,
 .textarea:focus {
-  @apply ring-4 ring-primary/10;
+  @apply ring-0 outline-none border-primary;
+  border-width: 2px;
 }
 
-/* Badge con borde */
+/* Badge flat */
+.badge {
+  font-weight: 600;
+  border-width: 2px;
+}
+
 .badge-outline {
-  @apply border-primary/20;
+  @apply border-current;
+  border-width: 2px;
 }
 
 /* ============================================
@@ -168,5 +239,74 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-base-content/30;
+  }
+}
+
+/* ============================================
+   TIPOGRAFÍA FLAT DESIGN
+   ============================================ */
+
+/* Headings con peso fuerte para jerarquía clara */
+h1, .h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h2, .h2 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+h3, .h3 {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Body text */
+body {
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-strong {
+  font-weight: 600;
+  @apply text-base-content;
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+
+/* Focus states claros para navegación con teclado */
+*:focus-visible {
+  outline: 3px solid oklch(var(--p));
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  @apply bg-primary text-white px-8 py-4 font-semibold;
+  z-index: 9999;
+  transition: top 0.3s;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

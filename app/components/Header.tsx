@@ -1,10 +1,10 @@
 'use client'
 
 /**
- * Componente Header - DaisyUI + Facil Design
+ * Componente Header - Flat Design
  *
  * Navbar con drawer para móvil, efecto glass en scroll y soporte
- * para enlaces internos o rutas (ej. página de pricing).
+ * para enlaces internos o rutas.
  */
 
 import { useState, useEffect } from 'react'
@@ -17,11 +17,10 @@ type NavLink = {
 }
 
 interface HeaderProps {
-  onCtaClick: () => void
   navLinks?: NavLink[]
 }
 
-export default function Header({ onCtaClick, navLinks }: HeaderProps) {
+export default function Header({ navLinks }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -46,13 +45,13 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
     if (checkbox) checkbox.checked = false
   }
 
-  const handleLoginClick = () => {
-    router.push('appfacildo-production.up.railway.app/signin')
+  const handleContactClick = () => {
+    router.push('/about')
     closeDrawer()
   }
 
-  const handleOpenAccount = () => {
-    router.push('appfacildo-production.up.railway.app/signup')
+  const handlePricingClick = () => {
+    router.push('/pricing')
     closeDrawer()
   }
 
@@ -98,15 +97,15 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
             isScrolled ? 'navbar-glass py-2' : 'bg-transparent py-4'
           }`}
         >
-          {/* Logo */}
+          {/* Logo - flat design */}
           <div className="navbar-start">
             <a href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <svg className="w-5 h-5 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center border-2 border-primary">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="text-lg font-semibold text-base-content">Facil.do</span>
+              <span className="text-lg font-bold text-base-content">Facil.do</span>
             </a>
           </div>
 
@@ -129,13 +128,13 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
           {/* Desktop CTA + Mobile Menu Button */}
           <div className="navbar-end gap-2">
             <button
-              onClick={handleLoginClick}
+              onClick={handleContactClick}
               className="btn btn-ghost btn-md hidden lg:flex text-base-content/80 hover:text-base-content"
             >
-              Iniciar sesión
+              Contacto
             </button>
-            <button onClick={handleOpenAccount} className="btn btn-primary btn-md hidden lg:flex">
-              Abrir una cuenta
+            <button onClick={handlePricingClick} className="btn btn-primary btn-md hidden lg:flex border-2">
+              Ver planes
             </button>
 
             {/* Mobile menu button */}
@@ -183,26 +182,26 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
           {/* Drawer Footer */}
           <div className="pt-6 border-t border-base-200">
             <button
-              onClick={handleLoginClick}
+              onClick={handleContactClick}
               className="btn btn-ghost w-full mb-3 text-base-content/80 hover:text-base-content"
             >
-              Iniciar sesión
+              Contacto
             </button>
             <button
               onClick={() => {
                 const checkbox = document.getElementById('mobile-drawer') as HTMLInputElement
                 if (checkbox) checkbox.checked = false
-                handleOpenAccount()
+                handlePricingClick()
               }}
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full border-2"
             >
-              Abrir una cuenta
+              Ver planes
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </button>
-            <p className="text-center text-sm text-base-content/50 mt-4">
-              500+ negocios ya separaron su cupo
+            <p className="text-center text-sm text-base-content/60 font-medium mt-4">
+              500+ negocios confían en Facil.do
             </p>
           </div>
         </div>

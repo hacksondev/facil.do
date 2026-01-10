@@ -53,29 +53,25 @@ export default function AboutContent() {
     { href: '/about', label: 'Nosotros', type: 'route' as const },
   ]
 
-  const handleCta = () => {
-    void logFirebaseEvent('about_cta', { location: 'header', destination: 'waitlist' })
-    window.location.href = '/#waitlist'
-  }
-
   return (
     <div className="min-h-screen bg-base-200">
-      <Header onCtaClick={handleCta} navLinks={navLinks} />
+      <Header navLinks={navLinks} />
 
       <main className="pt-24">
-        {/* Hero */}
-        <section className="section relative overflow-hidden">
-    
+        {/* Hero - Flat Design */}
+        <section className="section relative overflow-hidden bg-base-200">
+          <div className="absolute inset-0 dot-pattern-flat opacity-30" />
+
           <div className="container-custom relative z-10">
             <div className="max-w-4xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-base-100/80 px-4 py-2 border border-base-300  backdrop-blur">
-                <span className="h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
-                <span className="text-sm font-medium text-base-content/70">Nuestro porqué</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 border-2 border-primary mb-6">
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                <span className="text-sm font-semibold text-primary">Nuestro porqué</span>
               </div>
-              <h1 className="mt-6 text-4xl md:text-5xl font-bold text-base-content leading-tight">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-base-content leading-tight">
                 Estamos construyendo la cuenta que las MIPYMES merecen.
               </h1>
-              <p className="mt-4 text-lg text-base-content/70 max-w-2xl">
+              <p className="mt-4 text-lg text-base-content/70 max-w-2xl font-medium">
                 Creemos que una cuenta empresarial debe ser tan fácil como un chat y tan robusta como un banco. Sin filas,
                 sin tantos papeleos y con herramientas que sí resuelven el día a día.
               </p>
@@ -83,11 +79,11 @@ export default function AboutContent() {
                 {milestones.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-base-300 bg-base-100/80 p-4 backdrop-blur"
+                    className="rounded-2xl border-2 border-base-300 bg-base-100 p-4 no-shadow"
                   >
-                    <p className="text-sm text-base-content/60">{item.label}</p>
-                    <p className="text-2xl font-bold text-base-content mt-1">{item.value}</p>
-                    <p className="text-sm text-base-content/60">{item.detail}</p>
+                    <p className="text-sm text-base-content/60 font-semibold uppercase tracking-wide">{item.label}</p>
+                    <p className="text-3xl font-extrabold text-primary mt-1">{item.value}</p>
+                    <p className="text-sm text-base-content/60 font-medium">{item.detail}</p>
                   </div>
                 ))}
               </div>
@@ -95,14 +91,14 @@ export default function AboutContent() {
           </div>
         </section>
 
-        {/* Misión y cómo trabajamos */}
-        <section className="section pt-0">
+        {/* Misión y cómo trabajamos - Flat Design */}
+        <section className="section pt-0 bg-base-100">
           <div className="container-custom grid gap-10 ">
-            <div className="card bg-base-100  border border-base-300">
+            <div className="card bg-base-100 border-2 border-base-300 no-shadow">
               <div className="card-body space-y-4">
-                <div className="badge badge-outline badge-lg text-base-content/70">Misión</div>
-                <h2 className="text-2xl font-bold text-base-content">Finanzas simples para negocios que no pueden parar</h2>
-                <p className="text-base text-base-content/70">
+                <div className="badge badge-primary border-2 font-semibold">Misión</div>
+                <h2 className="text-3xl font-extrabold text-base-content">Finanzas simples para negocios que no pueden parar</h2>
+                <p className="text-base text-base-content/70 font-medium">
                   Nuestro objetivo es quitarle fricción a cada operación financiera de una MIPYME. Desde abrir la cuenta,
                   hasta pagar proveedores, controlar gastos del equipo o preparar reportes fiscales.
                 </p>
@@ -113,9 +109,9 @@ export default function AboutContent() {
                     { title: 'Listo para el contador', text: 'Reportes claros y exportables cuando los necesitas.' },
                     { title: 'Soporte en minutos', text: 'Chat, correo y acompañamiento personalizado.' },
                   ].map((item) => (
-                    <div key={item.title} className="p-3 rounded-xl bg-base-200/60 border border-base-200">
-                      <p className="font-semibold text-base-content">{item.title}</p>
-                      <p className="text-sm text-base-content/70">{item.text}</p>
+                    <div key={item.title} className="p-4 rounded-xl bg-base-200 border-2 border-base-300">
+                      <p className="font-bold text-base-content">{item.title}</p>
+                      <p className="text-sm text-base-content/70 font-medium mt-1">{item.text}</p>
                     </div>
                   ))}
                 </div>
@@ -149,32 +145,32 @@ export default function AboutContent() {
           </div>
         </section>
 
-        {/* Valores */}
-        <section className="section pt-0">
+        {/* Valores - Flat Design */}
+        <section className="section pt-0 bg-base-200">
           <div className="container-custom">
-            <div className="mb-6">
-              <p className="text-sm font-semibold text-primary uppercase tracking-wide">Valores</p>
-              <h3 className="text-2xl font-bold text-base-content mt-2">Lo que guía cada decisión</h3>
+            <div className="mb-8">
+              <div className="badge badge-primary border-2 font-semibold mb-3">Valores</div>
+              <h3 className="text-3xl font-extrabold text-base-content">Lo que guía cada decisión</h3>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {values.map((value) => (
-                <div key={value.title} className="p-6 rounded-2xl border border-base-300 bg-base-100">
-                  <h4 className="text-lg font-semibold text-base-content">{value.title}</h4>
-                  <p className="text-base text-base-content/70 mt-2">{value.description}</p>
+                <div key={value.title} className="p-6 rounded-2xl border-2 border-base-300 bg-base-100 no-shadow">
+                  <h4 className="text-xl font-bold text-base-content">{value.title}</h4>
+                  <p className="text-base text-base-content/70 mt-2 font-medium">{value.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Equipo */}
-        <section className="section pt-0">
+        {/* Equipo - Flat Design */}
+        <section className="section pt-0 bg-base-100">
           <div className="container-custom">
-            <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
+            <div className="mb-8 flex items-center justify-between gap-4 flex-wrap">
               <div>
-                <p className="text-sm font-semibold text-primary uppercase tracking-wide">Equipo</p>
-                <h3 className="text-2xl font-bold text-base-content mt-2">Quienes lo hacemos posible</h3>
-                <p className="text-base text-base-content/70 mt-1">
+                <div className="badge badge-primary border-2 font-semibold mb-3">Equipo</div>
+                <h3 className="text-3xl font-extrabold text-base-content">Quienes lo hacemos posible</h3>
+                <p className="text-base text-base-content/70 mt-2 font-medium">
                   Un equipo de producto, ingeniería y operaciones obsesionado con la experiencia.
                 </p>
               </div>
@@ -182,18 +178,18 @@ export default function AboutContent() {
 
             <div className="grid gap-6 md:grid-cols-3">
               {team.map((member) => (
-                <div key={member.name} className="card bg-base-100 border border-base-300">
+                <div key={member.name} className="card bg-base-100 border-2 border-base-300 no-shadow">
                   <div className="card-body space-y-2">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                    <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg border-2 border-primary">
                       {member.name
                         .split(' ')
                         .map((n) => n[0])
                         .join('')
                         .slice(0, 2)}
                     </div>
-                    <p className="text-lg font-semibold text-base-content">{member.name}</p>
-                    <p className="text-sm text-base-content/70">{member.role}</p>
-                    <p className="text-sm text-base-content/80">{member.focus}</p>
+                    <p className="text-xl font-bold text-base-content">{member.name}</p>
+                    <p className="text-sm text-base-content/70 font-semibold">{member.role}</p>
+                    <p className="text-sm text-base-content/80 font-medium">{member.focus}</p>
                   </div>
                 </div>
               ))}
@@ -201,33 +197,33 @@ export default function AboutContent() {
           </div>
         </section>
 
-        {/* CTA final */}
-        <section className="section pt-0">
+        {/* CTA final - Flat Design */}
+        <section className="section pt-0 bg-base-200">
           <div className="container-custom">
-            <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary to-secondary text-primary-content">
-              <div className="absolute inset-0 opacity-20 grid-pattern" />
-              <div className="relative p-8 space-y-4">
-                <p className="text-sm font-semibold uppercase tracking-wide">Hablemos</p>
-                <h3 className="text-3xl font-bold leading-tight">¿Listo para simplificar tus finanzas?</h3>
-                <p className="text-base text-primary-content/80 max-w-2xl">
-                  Súmate a la lista de espera y te acompañamos en el onboarding. Sin costo de mantenimiento, sin letras pequeñas.
+            <div className="relative overflow-hidden rounded-3xl border-2 border-primary bg-primary text-white">
+              <div className="absolute inset-0 opacity-10 grid-pattern-flat" />
+              <div className="relative p-8 md:p-12 space-y-4">
+                <div className="badge badge-outline border-2 border-white text-white font-semibold">Hablemos</div>
+                <h3 className="text-3xl md:text-4xl font-extrabold leading-tight">¿Listo para simplificar tus finanzas?</h3>
+                <p className="text-base text-white/90 max-w-2xl font-medium">
+                  Conoce nuestros planes y descubre cómo podemos ayudarte. Sin costo de mantenimiento, sin letras pequeñas.
                 </p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 pt-2">
                   <a
-                    href="/#waitlist"
-                    className="btn btn-primary"
+                    href="/pricing"
+                    className="btn bg-white text-primary border-2 border-white hover:bg-white/90 font-bold"
                     onClick={() =>
-                      void logFirebaseEvent('about_cta', { location: 'cta_bottom', destination: 'waitlist' })
+                      void logFirebaseEvent('about_cta', { location: 'cta_bottom', destination: 'pricing' })
                     }
                   >
-                    Separa tu cupo
+                    Ver planes
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </a>
                   <a
                     href="/#features"
-                    className="btn btn-outline border-primary/50 text-primary-content"
+                    className="btn btn-outline border-2 border-white text-white hover:bg-white hover:text-primary font-bold"
                     onClick={() =>
                       void logFirebaseEvent('about_cta', { location: 'cta_bottom', destination: 'features' })
                     }

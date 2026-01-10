@@ -1,32 +1,32 @@
 /**
- * Componente Footer - DaisyUI + Facil Design
+ * Componente Footer - Flat Design
  *
- * Pie de página minimalista y elegante.
+ * Pie de página minimalista con diseño flat.
  */
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="footer footer-center bg-neutral text-neutral-content">
+    <footer className="footer footer-center bg-neutral text-neutral-content border-t-4 border-primary">
       {/* Main footer */}
       <div className="section py-16 md:py-20 w-full">
         <div className="container-custom">
           <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4 text-left w-full">
-            {/* Brand */}
+            {/* Brand - Flat Design */}
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                {/* Logo */}
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-                  <svg className="w-5 h-5 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                {/* Logo flat */}
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center border-2 border-primary">
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <span className="text-xl font-semibold text-neutral-content">
+                <span className="text-xl font-bold text-neutral-content">
                   Facil.do
                 </span>
               </div>
-              <p className="text-neutral-content/70 max-w-sm mb-6 leading-relaxed">
+              <p className="text-neutral-content/70 max-w-sm mb-6 leading-relaxed font-medium">
                 La cuenta empresarial digital diseñada para MIPYMES dominicanas.
                 Simplificando tus finanzas, impulsando tu negocio.
               </p>
@@ -65,37 +65,32 @@ export default function Footer() {
 
             {/* Producto */}
             <div>
-              <h4 className="footer-title opacity-100 text-neutral-content">
+              <h4 className="footer-title opacity-100 text-neutral-content font-bold mb-4">
                 Producto
               </h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="#features" className="link link-hover">
+                  <a href="#features" className="link link-hover font-medium">
                     Características
                   </a>
                 </li>
                 <li>
-                  <a href="/about" className="link link-hover">
+                  <a href="/about" className="link link-hover font-medium">
                     Nosotros
                   </a>
                 </li>
                 <li>
-                  <a href="#waitlist" className="link link-hover">
-                    Regístrate
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="link link-hover">
+                  <a href="/pricing" className="link link-hover font-medium">
                     Precios
                   </a>
                 </li>
                 <li>
-                  <a href="/terminos" className="link link-hover">
+                  <a href="/terminos" className="link link-hover font-medium">
                     Términos y condiciones
                   </a>
                 </li>
                  <li>
-                  <a href="/privacidad" className="link link-hover">
+                  <a href="/privacidad" className="link link-hover font-medium">
                     Politica de privacidad
                   </a>
                 </li>
@@ -104,20 +99,20 @@ export default function Footer() {
 
             {/* Contacto */}
             <div>
-              <h4 className="footer-title opacity-100 text-neutral-content">
+              <h4 className="footer-title opacity-100 text-neutral-content font-bold mb-4">
                 Contacto
               </h4>
               <ul className="space-y-3">
                 <li>
                   <a
                     href="mailto:hola@facil.do"
-                    className="link link-hover"
+                    className="link link-hover font-medium"
                   >
                     hola@facil.do
                   </a>
                 </li>
                 <li>
-                  <span className="opacity-50">
+                  <span className="opacity-60 font-medium">
                     Santo Domingo, RD
                   </span>
                 </li>
@@ -132,9 +127,9 @@ export default function Footer() {
       <div className="section py-6 w-full">
         <div className="container-custom">
           <div className="flex flex-col items-center gap-4 text-sm md:flex-row md:justify-between w-full">
-            <div className="opacity-50 text-center md:text-left">
-              <p>© {currentYear} Facil.do. Todos los derechos reservados.</p>
-              <p className="text-xs mt-1">Facil.do es una empresa de tecnología financiera que facilita el acceso a servicios financieros a través de alianzas con entidades bancarias locales.<br />No es un banco ni una institución asegurada por la  Superintendencia de Bancos de la República Dominicana</p>
+            <div className="opacity-60 text-center md:text-left">
+              <p className="font-medium">© {currentYear} Facil.do. Todos los derechos reservados.</p>
+              <p className="text-xs mt-1 font-medium">Facil.do es una empresa de tecnología financiera que facilita el acceso a servicios financieros a través de alianzas con entidades bancarias locales.<br />No es un banco ni una institución asegurada por la  Superintendencia de Bancos de la República Dominicana</p>
             </div>
           </div>
         </div>
