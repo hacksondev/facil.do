@@ -114,6 +114,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (insertError) throw insertError
+        if (!insertCompany) throw new Error('No se pudo crear la empresa')
         currentCompanyId = insertCompany.id
       }
 
@@ -158,6 +159,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (caseError) throw caseError
+        if (!caseRow) throw new Error('No se pudo crear el caso de onboarding')
         currentCaseId = caseRow.id
       }
 
@@ -253,6 +255,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (insertPersonError) throw insertPersonError
+        if (!personRow) throw new Error('No se pudo crear la persona')
         currentPersonId = personRow.id
       }
 

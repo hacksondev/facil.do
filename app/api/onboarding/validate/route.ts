@@ -34,16 +34,20 @@ export async function POST(request: Request) {
 
   try {
     if (email) {
-      const { data: usersData, error: emailError } = await supabaseService.auth.admin.listUsers({
-        page: 1,
-        perPage: 1,
-        email,
-      })
-      if (emailError && emailError.message && emailError.message.toLowerCase().includes('invalid')) {
+      const isEmailFormatValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+      if (!isEmailFormatValid) {
         return NextResponse.json({ error: 'Correo inválido' }, { status: 400 })
       }
-      if (emailError) throw emailError
-      if (usersData?.users?.length) {
+
+      const { data: existingUser, error: emailError } = await supabaseService
+        .schema('auth')
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle()
+
+      if (emailError && emailError.code !== 'PGRST116') throw emailError
+      if (existingUser) {
         conflicts.email = true
       }
     }

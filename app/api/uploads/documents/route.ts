@@ -45,9 +45,9 @@ export async function POST(request: Request) {
       })
     if (uploadError) throw uploadError
 
-    const { data: publicData, error: urlError } = supabaseService.storage.from(bucket).getPublicUrl(path)
-    if (urlError) throw urlError
-    const publicUrl = publicData.publicUrl
+    const { data: publicData } = supabaseService.storage.from(bucket).getPublicUrl(path)
+    const publicUrl = publicData?.publicUrl
+    if (!publicUrl) throw new Error('No se pudo obtener URL pública')
 
     const { error: insertError } = await supabaseService.from('documents').insert({
       company_id: companyId,
