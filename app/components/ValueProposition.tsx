@@ -4,7 +4,30 @@
  * Sección comparativa problema vs solución.
  */
 
+import { useState } from "react"
+
 export default function ValueProposition() {
+  const [mostrarTodo, setMostrarTodo] = useState(false)
+  const features = [
+    'Todo desde tu celular o Web, sin salir de tu negocio',
+    'Inteligencia artificial para optimizar tus finanzas',
+    'Tarifas claras y 100% transparentes',
+    'Reportes diseñados para MIPYMES',
+    'Apertura de cuentas bancarias empresariales 100% digital',
+    'Dashboard con vista clara de tu dinero',
+    'Atención al cliente dedicada a MIPYMES',
+    'Integraciones con las herramientas que ya usas',
+    'Seguridad de nivel bancario',
+    'Actualizaciones y mejoras constantes',
+    'Cumplimiento con regulaciones locales',
+    'Soporte en español y adaptado al mercado dominicano',
+    'Educación financiera para dueños de MIPYMES',
+    'Funcionalidades diseñadas para crecer contigo',
+    'Acceso anticipado a nuevas herramientas y servicios',
+  ]
+
+  const visibles = mostrarTodo ? features : features.slice(0, 5)
+
   return (
     <section className="section bg-base-100 relative">
       <div className="divider absolute top-0 left-0 right-0 m-0"></div>
@@ -75,6 +98,27 @@ export default function ValueProposition() {
               </div>
 
               <ul className="space-y-3">
+                {visibles.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center mt-0.5 flex-shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-base-content font-medium">{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {features.length > 5 && (
+                <button
+                  className="btn btn-link px-0 mt-2"
+                  onClick={() => setMostrarTodo((v: any) => !v)}
+                >
+                  {mostrarTodo ? 'Ver menos' : 'Ver más'}
+                </button>
+              )}
+              {/* <ul className="space-y-3">
                 {[
                   'Todo desde tu celular o Web, sin salir de tu negocio',
                   'Inteligencia artificial para optimizar tus finanzas',
@@ -101,7 +145,7 @@ export default function ValueProposition() {
                     <span className="text-base-content font-medium">{item}</span>
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
           </div>
         </div>
