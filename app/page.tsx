@@ -45,7 +45,7 @@ export default function HomePage() {
         <Features />
 
         {/* Waitlist Form */}
-        <WaitlistForm ref={waitlistRef} />
+        {/* <WaitlistForm ref={waitlistRef} /> */}
 
         {/* Footer */}
         <Footer />

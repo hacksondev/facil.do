@@ -36,9 +36,7 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
 
   const defaultNavLinks: NavLink[] = [
     { href: '#features', label: 'Características', type: 'anchor' },
-    { href: '/pricing', label: 'Precios', type: 'route' },
     { href: '/about', label: 'Nosotros', type: 'route' },
-    { href: '#waitlist', label: 'Regístrate', type: 'anchor' },
   ]
 
   const linksToRender = navLinks ?? defaultNavLinks
@@ -49,12 +47,12 @@ export default function Header({ onCtaClick, navLinks }: HeaderProps) {
   }
 
   const handleLoginClick = () => {
-    router.push('/backoffice/login')
+    router.push('appfacildo-production.up.railway.app/signin')
     closeDrawer()
   }
 
   const handleOpenAccount = () => {
-    router.push('/backoffice/onboarding/start')
+    router.push('appfacildo-production.up.railway.app/signup')
     closeDrawer()
   }
 

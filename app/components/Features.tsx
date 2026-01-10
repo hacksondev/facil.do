@@ -66,7 +66,7 @@ export default function Features() {
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-16">
+        {/* <div className="text-center mt-16">
           <p className="text-base-content/60 mb-2">¿Quieres saber más?</p>
           <a href="#waitlist" className="link link-primary font-medium inline-flex items-center gap-2">
             Separa tu cupo y te mantendremos informado
@@ -74,7 +74,7 @@ export default function Features() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </a>
-        </div>
+        </div> */}
       </div>
     </section>
   )

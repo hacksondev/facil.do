@@ -1,6 +1,6 @@
 # Backoffice UI (Mock)
 
-Pantalla de backoffice inspirada en Mercury usando datos de la Mock API. Ruta: `/backoffice`.
+Pantalla de backoffice inspirada en Mercury usando datos de la Mock API. Ruta: `/panel`.
 
 ## Datos
 - Fuente: Mock API (`/api/mock/*`). La página usa `app/api/mock/data.ts` como dataset en memoria.
@@ -22,19 +22,19 @@ Pantalla de backoffice inspirada en Mercury usando datos de la Mock API. Ruta: `
 - Movimientos recientes: tabla con fecha, cuenta, contraparte, monto y estado.
 
 ## Rutas mock disponibles
-- `/backoffice`: dashboard general (saldos, cuentas, onboarding, alertas, movimientos).
-- `/backoffice/onboarding`: tablero de casos KYB/KYC, conteos por estado y tabla de empresas.
-- `/backoffice/accounts`: listado de cuentas, balances por moneda, límites y movimientos.
-- `/backoffice/alerts`: alertas AML abiertas/cerradas con severidad y acciones sugeridas.
-- `/backoffice/login`: formulario de ingreso al backoffice (mock, sin autenticación real).
+- `/panel`: dashboard general (saldos, cuentas, onboarding, alertas, movimientos).
+- `/panel/onboarding`: tablero de casos KYB/KYC, conteos por estado y tabla de empresas.
+- `/panel/accounts`: listado de cuentas, balances por moneda, límites y movimientos.
+- `/panel/alerts`: alertas AML abiertas/cerradas con severidad y acciones sugeridas.
+- `/panel/login`: formulario de ingreso al backoffice (mock, sin autenticación real).
 
 ## Autenticación mock
 - Se usa Supabase Auth (email/contraseña). El login y alta se hacen desde las pantallas de onboarding/login.
-- Middleware (`middleware.ts`) protege `/backoffice/*` y redirige a `/backoffice/login` si no hay sesión.
+- Middleware (`middleware.ts`) protege `/panel/*` y redirige a `/panel/login` si no hay sesión.
 
 ## Cómo adaptar a una API real
 - Mantén los contratos actuales de `/api/mock/*` o crea un adapter en el front para el nuevo backend.
-- Sustituye `apiBase` en `app/backoffice/page.tsx` por la URL del BFF real y agrega auth headers.
+- Sustituye `apiBase` en `app/panel/page.tsx` por la URL del BFF real y agrega auth headers.
 - Sustituye el gráfico placeholder por datos de transacciones (entradas/salidas) al migrar.
 
 ## Inspiración visual

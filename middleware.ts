@@ -3,27 +3,26 @@ import { NextResponse } from 'next/server'
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 const PUBLIC_PATHS = [
-  '/backoffice/login',
-  '/backoffice/onboarding/start',
-  '/backoffice/onboarding/create-account',
-  '/backoffice/onboarding/company-info',
-  '/backoffice/onboarding/company-address',
-  '/backoffice/onboarding/ownership',
-  '/backoffice/onboarding/documents',
-  '/backoffice/onboarding/expected-activity',
-  '/backoffice/onboarding/follow-up',
-  '/backoffice/onboarding/liveness',
-  '/backoffice/onboarding',
-  '/backoffice/onboarding/complete',
-  '/backoffice/onboarding/activate',
-  '/backoffice/onboarding/deposito',
+  '/panel/login',
+  '/panel/onboarding/start',
+  '/panel/onboarding/create-account',
+  '/panel/onboarding/company-info',
+  '/panel/onboarding/company-address',
+  '/panel/onboarding/ownership',
+  '/panel/onboarding/documents',
+  '/panel/onboarding/expected-activity',
+  '/panel/onboarding/follow-up',
+  '/panel/onboarding/liveness',
+  '/panel/onboarding/deposito',
+  '/panel/onboarding/complete',
+  '/panel/onboarding/activate',
 ]
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Solo protegemos rutas de backoffice (no API ni assets)
-  if (!pathname.startsWith('/backoffice')) {
+  // Solo protegemos rutas de panel (no API ni assets)
+  if (!pathname.startsWith('/panel')) {
     return NextResponse.next()
   }
 
@@ -31,8 +30,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Permitir assets estáticos bajo /backoffice (si aplica)
-  if (pathname.startsWith('/backoffice/_next') || pathname.startsWith('/backoffice/assets')) {
+  // Permitir assets estáticos bajo /panel (si aplica)
+  if (pathname.startsWith('/_next') || pathname.startsWith('/assets')) {
     return NextResponse.next()
   }
 
@@ -44,7 +43,7 @@ export async function middleware(request: NextRequest) {
 
   if (!session) {
     const loginUrl = request.nextUrl.clone()
-    loginUrl.pathname = '/backoffice/login'
+    loginUrl.pathname = '/panel/login'
     loginUrl.searchParams.set('redirect', pathname)
     return NextResponse.redirect(loginUrl)
   }
@@ -53,5 +52,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/backoffice/:path*'],
+  matcher: ['/:path*'],
 }

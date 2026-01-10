@@ -22,7 +22,7 @@ Objetivo: usar Socure (DocV/Liveness) para validar al propietario principal dura
 - `GET /api/liveness/status?sessionId=...`  
   Devuelve estado y score persistido para que el front pueda mostrar el resultado.
 
-## Flujo UX (backoffice/onboarding)
+## Flujo UX (panel/onboarding)
 1) En paso “Propietarios/UBO” mostrar botón “Iniciar prueba de vida”.  
 2) Al clic: `POST /api/liveness/session` → obtener `sessionToken/url`.  
 3) Iniciar SDK/redirect de Socure; al terminar, Socure llama a webhook.  

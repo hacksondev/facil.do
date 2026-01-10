@@ -50,9 +50,7 @@ const team = [
 export default function AboutContent() {
   const navLinks = [
     { href: '/#features', label: 'Características', type: 'route' as const },
-    { href: '/pricing', label: 'Precios', type: 'route' as const },
     { href: '/about', label: 'Nosotros', type: 'route' as const },
-    { href: '/#waitlist', label: 'Regístrate', type: 'route' as const },
   ]
 
   const handleCta = () => {

@@ -226,11 +226,11 @@ Se incluyó una API mock para el backoffice (sin persistencia) servida desde Nex
 
 ## Backoffice UI (Mock)
 
-- Pantalla mock en `/backoffice` inspirada en Mercury, consumiendo la API mock.
+- Pantalla mock en `/panel` inspirada en Mercury, consumiendo la API mock.
 - Muestra saldos DOP/USD, cuentas, onboarding, alertas AML y movimientos recientes.
-- Rutas adicionales: `/backoffice/onboarding`, `/backoffice/accounts`, `/backoffice/alerts`, `/backoffice/login`.
-- Autenticación con Supabase: login y alta de usuario usan Supabase Auth; middleware protege `/backoffice/*`.
-- Cómo adaptarla a la API real: ver `docs/backoffice-ui.md`.
+- Rutas adicionales: `/panel/onboarding`, `/panel/accounts`, `/panel/alerts`, `/panel/login`.
+- Autenticación con Supabase: login y alta de usuario usan Supabase Auth; middleware protege `/panel/*`.
+- Cómo adaptarla a la API real: ver `docs/panel-ui.md`.
 - Integración Socure (prueba de vida): guía en `docs/socure-liveness.md`.
 - Validaciones RD (Padrón JCE y RNC/DGII): ver `docs/rd-validaciones.md`.
 - Auth con Supabase (BaaS): ver `docs/auth-supabase.md`.
