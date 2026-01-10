@@ -92,7 +92,7 @@ export default function Header({ navLinks }: HeaderProps) {
           {/* Logo - flat design */}
           <div className="navbar-start">
             <a href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center border-2 border-primary">
+              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -123,7 +123,7 @@ export default function Header({ navLinks }: HeaderProps) {
             >
               Iniciar sesión
             </button>
-            <button onClick={handlePricingClick} className="btn btn-primary btn-md hidden lg:flex border-2">
+            <button onClick={handlePricingClick} className="btn btn-primary btn-md hidden lg:flex">
              Abrir una cuenta
             </button>
 
@@ -169,7 +169,7 @@ export default function Header({ navLinks }: HeaderProps) {
           </ul>
 
           {/* Drawer Footer */}
-          <div className="pt-6 border-t border-base-200">
+          <div className="pt-6">
             <p className="text-center text-sm text-base-content/60 font-medium mt-4">
               500+ negocios confían en Facil.do
             </p>

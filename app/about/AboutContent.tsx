@@ -90,7 +90,7 @@ export default function AboutContent() {
           <div className="container-custom grid gap-10 ">
             <div className="card bg-base-100 no-shadow">
               <div className="card-body space-y-4">
-                <div className="badge badge-primary border-0 font-bold p-3">Misión</div>
+                <div className="badge badge-primary font-bold p-3">Misión</div>
                 <h2 className="text-3xl font-extrabold text-base-content">Finanzas simples para negocios que no pueden parar</h2>
                 <p className="text-base text-base-content/70 font-medium">
                   Nuestro objetivo es quitarle fricción a cada operación financiera de una MIPYME. Desde abrir la cuenta,

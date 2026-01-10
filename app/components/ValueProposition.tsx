@@ -25,10 +25,10 @@ export default function ValueProposition() {
         {/* Comparison Cards - Flat Design */}
         <div className="grid gap-6 md:grid-cols-2 lg:gap-8 mb-16">
           {/* Problem Card */}
-          <div className="card bg-base-200 border-2 border-error/30 no-shadow">
+          <div className="card bg-base-100 no-shadow">
             <div className="card-body">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-error flex items-center justify-center border-2 border-error">
+                <div className="w-12 h-12 rounded-2xl bg-error flex items-center justify-center">
                   <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                   </svg>
@@ -60,8 +60,7 @@ export default function ValueProposition() {
             </div>
           </div>
 
-          {/* Solution Card - Flat Design */}
-          <div className="card bg-base-100 border-2 border-success/30 no-shadow">
+          <div className="card bg-base-100 no-shadow">
             <div className="card-body">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-2xl bg-success flex items-center justify-center border-2 border-success">
@@ -109,7 +108,7 @@ export default function ValueProposition() {
 
         {/* Stats - Flat Design */}
         <div className="flex justify-center">
-          <div className="stats bg-base-200 border-2 border-base-300 no-shadow">
+          <div className="stats bg-base-200 border-1 border-base-300 no-shadow">
             <div className="stat">
               <div className="stat-value text-primary font-extrabold">85%</div>
               <div className="stat-title font-semibold">de las MIPYMES</div>

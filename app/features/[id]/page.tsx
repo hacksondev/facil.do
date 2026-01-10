@@ -240,7 +240,7 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
             Unete a Facil.do y lleva tu negocio al siguiente nivel.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="mailto:hola@facil.do" className="btn bg-white text-primary border-2 border-white hover:bg-white/90 font-bold">
+            <Link href="mailto:hola@facil.do" className="btn bg-white text-primary  hover:bg-white/90 font-bold">
               Contáctanos
             </Link>
           </div>
