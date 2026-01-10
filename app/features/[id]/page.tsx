@@ -203,38 +203,6 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
         </div>
       </section>
 
-      {/* <section className="section bg-base-200/50">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-base-content mb-4">Cómo funciona</h2>
-            <p className="text-base-content/70 max-w-2xl mx-auto">
-              Empezar es muy sencillo
-            </p>
-          </div>
-
-          <div className="max-w-3xl mx-auto">
-            <ul className="timeline timeline-vertical">
-              {feature.howItWorks.map((step, index) => (
-                <li key={index}>
-                  {index > 0 && <hr className="bg-primary" />}
-                  <div className="timeline-start timeline-box bg-base-100 shadow-md">
-                    <div className="font-semibold text-primary mb-1">Paso {step.step}</div>
-                    <div className="font-medium">{step.title}</div>
-                    <div className="text-sm text-base-content/70 mt-1">{step.description}</div>
-                  </div>
-                  <div className="timeline-middle">
-                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-content font-bold">
-                      {step.step}
-                    </div>
-                  </div>
-                  {index < feature.howItWorks.length - 1 && <hr className="bg-primary" />}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section> */}
-
       <section className="section bg-base-100">
         <div className="container-custom">
           <div className="text-center mb-12">
