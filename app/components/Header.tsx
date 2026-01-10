@@ -169,11 +169,11 @@ export default function Header({ navLinks }: HeaderProps) {
           </ul>
 
           {/* Drawer Footer */}
-          <div className="pt-6">
+          {/* <div className="pt-6">
             <p className="text-center text-sm text-base-content/60 font-medium mt-4">
               500+ negocios confían en Facil.do
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

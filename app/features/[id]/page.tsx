@@ -236,7 +236,7 @@ export default function FeatureDetailPage({ params }: FeaturePageProps) {
             ¿Listo para simplificar tu negocio?
           </h2>
           <p className="text-primary-content/80 mb-8 max-w-2xl mx-auto">
-            Más de 500 negocios ya usan nuestra plataforma.
+            {/* Más de 500 negocios ya usan nuestra plataforma. */}
             Unete a Facil.do y lleva tu negocio al siguiente nivel.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -25,7 +25,7 @@ const values = [
 
 const milestones = [
   { label: 'Fundación', value: '2026', detail: 'Arrancamos con el primer prototipo y pruebas con comercios.' },
-  { label: 'Validación', value: '500+', detail: 'Negocios en lista de espera en menos de 90 días.' },
+  // { label: 'Validación', value: '500+', detail: 'Negocios en lista de espera en menos de 90 días.' },
   { label: 'Operación', value: '24/7', detail: 'Plataforma diseñada para operar en cualquier dispositivo.' },
 ]
 

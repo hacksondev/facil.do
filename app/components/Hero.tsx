@@ -12,12 +12,12 @@ export default function Hero() {
       <div className="hero-content text-center lg:text-left relative z-10">
         <div className="max-w-4xl">
       
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border-2 border-success mb-6 animate-fade-in-down">
+          {/* <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border-2 border-success mb-6 animate-fade-in-down">
             <div className="w-2 h-2 rounded-full bg-success" />
             <span className="text-sm font-semibold text-success">
               500+ negocios confían en Facil.do
             </span>
-          </div>
+          </div> */}
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-base-content leading-tight mb-6 animate-fade-in-up animate-fill-both animate-delay-100">
             La banca empresarial digital diseñada para{' '}
@@ -30,7 +30,7 @@ export default function Hero() {
           </p>
 
           <div className="animate-fade-in-up animate-fill-both animate-delay-400">
-            <div className="flex items-center gap-3 justify-center lg:justify-start mb-6">
+            {/* <div className="flex items-center gap-3 justify-center lg:justify-start mb-6">
               <div className="avatar-group -space-x-3">
                 {['JM', 'AP', 'LC', 'RD'].map((initials, i) => (
                   <div key={i} className="avatar placeholder">
@@ -43,7 +43,7 @@ export default function Hero() {
               <p className="text-sm text-base-content/70">
                 <span className="font-bold text-base-content">500+</span> negocios confían en nosotros
               </p>
-            </div>
+            </div> */}
 
             <div className="flex flex-wrap gap-6 justify-center lg:justify-start">
               {[
