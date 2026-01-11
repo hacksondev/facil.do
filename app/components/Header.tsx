@@ -38,12 +38,12 @@ export default function Header({ navLinks }: HeaderProps) {
   }
 
   const handleContactClick = () => {
-    router.push('/#')
+    router.push('https://app.facil.do/signin')
     closeDrawer()
   }
 
   const handlePricingClick = () => {
-    router.push('/#')
+    router.push('https://app.facil.do/signup')
     closeDrawer()
   }
 

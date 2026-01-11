@@ -4,7 +4,7 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 const PUBLIC_PATHS = [
   '/panel/login',
-  '/panel/onboarding/start',
+  '/panel/signup',
   '/panel/onboarding/create-account',
   '/panel/onboarding/company-info',
   '/panel/onboarding/company-address',
